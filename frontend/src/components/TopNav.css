@@ -1,0 +1,147 @@
+.top-nav {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 88px;
+  background: #1a1a1a;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 2.5rem;
+  z-index: 1000;
+  box-shadow: 0 3px 15px rgba(0, 0, 0, 0.3);
+}
+
+.top-nav-brand {
+  display: flex;
+  align-items: center;
+}
+
+.top-nav-logo {
+  font-size: 1.8rem;
+  font-weight: 700;
+  color: #00bcd4;
+  text-decoration: none;
+  letter-spacing: -0.8px;
+  transition: color 0.3s ease;
+}
+
+.top-nav-logo:hover {
+  color: #00a8bd;
+}
+
+.top-nav-actions {
+  display: flex;
+  align-items: center;
+  gap: 1.8rem;
+}
+
+.auth-buttons {
+  display: flex;
+  gap: 1rem;
+}
+
+.btn-login {
+  padding: 0.7rem 1.8rem;
+  border: 1px solid rgba(0, 188, 212, 0.4);
+  border-radius: 8px;
+  color: #00bcd4;
+  font-weight: 500;
+  font-size: 1rem;
+  transition: all 0.3s ease;
+  background: transparent;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.btn-login:hover {
+  background: rgba(0, 188, 212, 0.1);
+  border-color: #00bcd4;
+  transform: translateY(-1px);
+}
+
+.btn-signup {
+  padding: 0.7rem 1.8rem;
+  background: #00bcd4;
+  color: #1a1a1a;
+  border-radius: 8px;
+  font-weight: 500;
+  font-size: 1rem;
+  transition: all 0.3s ease;
+  border: none;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.btn-signup:hover {
+  background: #00a8bd;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 10px rgba(0, 188, 212, 0.3);
+}
+
+/* Profile Section */
+.profile-section {
+  display: flex;
+  align-items: center;
+  gap: 1.2rem;
+  margin-left: 2rem;
+  padding-left: 2rem;
+  border-left: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.profile-info {
+  text-align: right;
+}
+
+.profile-name {
+  font-weight: 500;
+  color: #fff;
+  font-size: 1rem;
+}
+
+.profile-role {
+  font-size: 0.85rem;
+  color: rgba(255, 255, 255, 0.6);
+  margin-top: 0.1rem;
+}
+
+.profile-avatar {
+  width: 45px;
+  height: 45px;
+  border-radius: 8px;
+  background: #00bcd4;
+  color: #1a1a1a;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 500;
+  font-size: 1.2rem;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .top-nav {
+    padding: 0 1.5rem;
+    height: 65px;
+  }
+
+  .top-nav-actions {
+    gap: 1.2rem;
+  }
+
+  .btn-login,
+  .btn-signup {
+    padding: 0.5rem 1.4rem;
+    font-size: 0.85rem;
+  }
+
+  .profile-info {
+    display: none;
+  }
+
+  .profile-section {
+    margin-left: 1rem;
+    padding-left: 1rem;
+  }
+} 

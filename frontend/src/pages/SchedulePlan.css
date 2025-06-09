@@ -322,6 +322,38 @@
   gap: 1rem;
 }
 
+.task-filters {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  margin-bottom: 2rem;
+  background: #f8fafc;
+  padding: 15px;
+  border-radius: 12px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
+}
+
+.filter-btn {
+  padding: 10px 20px;
+  border: none;
+  border-radius: 8px;
+  background-color: #e2e8f0;
+  color: #64748b;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.filter-btn:hover {
+  background-color: #cbd5e1;
+}
+
+.filter-btn.active {
+  background-color: #6c5ce7;
+  color: white;
+  box-shadow: 0 4px 10px rgba(108, 92, 231, 0.3);
+}
+
 .btn-export {
   background: linear-gradient(135deg, #4f46e5, #818cf8);
   color: white;
@@ -366,8 +398,9 @@
   border: none;
   padding: 0.5rem 1rem;
   border-radius: 8px;
-  cursor: pointer;
+  font-size: 1rem;
   font-weight: 500;
+  cursor: pointer;
   transition: all 0.3s ease;
   margin: 0 0.25rem;
 }
