@@ -1,0 +1,322 @@
+:root {
+  /* Primary Colors */
+  --primary-color: #2ecc71;      /* Green - Success, completion */
+  --primary-dark: #27ae60;       /* Darker green */
+  --primary-light: #82e0aa;      /* Light green */
+  
+  /* Secondary Colors */
+  --gray-100: #f8f9fa;          /* Light gray - Background */
+  --gray-200: #e9ecef;          /* Border, dividers */
+  --gray-300: #dee2e6;          /* Input borders */
+  --gray-400: #ced4da;          /* Disabled elements */
+  --gray-500: #adb5bd;          /* Secondary text */
+  --gray-600: #6c757d;          /* Primary text */
+  --gray-700: #495057;          /* Headings */
+  --gray-800: #343a40;          /* Dark backgrounds */
+  --gray-900: #212529;          /* Darkest gray */
+  
+  /* Accent Colors */
+  --amber: #ffc107;             /* Amber - Urgency, importance */
+  --amber-dark: #e0a800;        /* Darker amber */
+  --blue: #0d6efd;              /* Blue - Trust, action */
+  --blue-dark: #0b5ed7;         /* Darker blue */
+  
+  /* Status Colors */
+  --success: var(--primary-color);
+  --warning: var(--amber);
+  --danger: #dc3545;
+  --info: var(--blue);
+  
+  /* UI Elements */
+  --border-radius: 8px;
+  --box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  --transition: all 0.3s ease;
+}
+
+/* Custom Button Styles */
+.btn-primary {
+  background-color: var(--primary-color) !important;
+  border-color: var(--primary-color) !important;
+  transition: var(--transition);
+}
+
+.btn-primary:hover {
+  background-color: var(--primary-dark) !important;
+  border-color: var(--primary-dark) !important;
+  transform: translateY(-1px);
+  box-shadow: var(--box-shadow);
+}
+
+.btn-outline-primary {
+  color: var(--primary-color) !important;
+  border-color: var(--primary-color) !important;
+}
+
+.btn-outline-primary:hover {
+  background-color: var(--primary-color) !important;
+  color: white !important;
+}
+
+/* Action Buttons */
+.btn-success {
+  background-color: var(--blue) !important;
+  border-color: var(--blue) !important;
+}
+
+.btn-success:hover {
+  background-color: var(--blue-dark) !important;
+  border-color: var(--blue-dark) !important;
+}
+
+/* Custom Card Styles */
+.card {
+  border-radius: var(--border-radius);
+  box-shadow: var(--box-shadow);
+  transition: var(--transition);
+  background-color: white;
+  border: 1px solid var(--gray-200);
+}
+
+.card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+}
+
+/* Custom Form Styles */
+.form-control {
+  border-radius: var(--border-radius);
+  border: 1px solid var(--gray-300);
+  transition: var(--transition);
+}
+
+.form-control:focus {
+  border-color: var(--primary-color);
+  box-shadow: 0 0 0 0.2rem rgba(46, 204, 113, 0.25);
+}
+
+/* Custom Alert Styles */
+.alert-success {
+  background-color: var(--primary-light);
+  border-color: var(--primary-color);
+  color: var(--gray-700);
+}
+
+.alert-warning {
+  background-color: #fff3cd;
+  border-color: var(--amber);
+  color: var(--gray-700);
+}
+
+/* Custom Badge Styles */
+.badge {
+  border-radius: 12px;
+  padding: 5px 10px;
+}
+
+/* Custom List Group Styles */
+.list-group-item {
+  border-radius: var(--border-radius);
+  margin-bottom: 8px;
+  transition: var(--transition);
+  border: 1px solid var(--gray-200);
+}
+
+.list-group-item:hover {
+  background-color: var(--gray-100);
+}
+
+/* Custom Navigation Styles */
+.nav-link {
+  color: var(--gray-600) !important;
+  transition: var(--transition);
+  border-radius: var(--border-radius);
+  margin: 4px 0;
+}
+
+.nav-link:hover {
+  background-color: var(--gray-100);
+  color: var(--primary-color) !important;
+}
+
+.nav-link.active {
+  background-color: var(--primary-color) !important;
+  color: white !important;
+}
+
+/* Custom Table Styles */
+.table {
+  border-radius: var(--border-radius);
+  overflow: hidden;
+}
+
+.table thead th {
+  background-color: var(--gray-800);
+  color: white;
+  border: none;
+}
+
+.table tbody tr:hover {
+  background-color: var(--gray-100);
+}
+
+/* Custom Progress Bar */
+.progress {
+  height: 8px;
+  border-radius: 4px;
+  background-color: var(--gray-200);
+}
+
+.progress-bar {
+  background-color: var(--primary-color);
+}
+
+/* Custom Sidebar */
+.sidebar {
+  background: linear-gradient(to bottom, var(--gray-800), var(--gray-900));
+  color: white;
+}
+
+.sidebar .nav-link {
+  color: var(--gray-300) !important;
+  opacity: 0.8;
+  transition: var(--transition);
+}
+
+.sidebar .nav-link:hover {
+  opacity: 1;
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+.sidebar .nav-link.active {
+  background-color: var(--primary-color);
+  opacity: 1;
+}
+
+/* Custom Task Status Colors */
+.status-pending {
+  background-color: var(--amber);
+  color: var(--gray-800);
+}
+
+.status-in-progress {
+  background-color: var(--blue);
+  color: white;
+}
+
+.status-completed {
+  background-color: var(--primary-color);
+  color: white;
+}
+
+/* Custom Priority Colors */
+.priority-high {
+  color: var(--danger);
+}
+
+.priority-medium {
+  color: var(--amber);
+}
+
+.priority-low {
+  color: var(--primary-color);
+}
+
+/* Custom Animation */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.fade-in {
+  animation: fadeIn 0.3s ease-out;
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--gray-100);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--gray-400);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--gray-500);
+}
+
+/* Body Background */
+body {
+  background-color: var(--gray-100);
+}
+
+/* Main Content Area */
+.main-content {
+  background-color: var(--gray-100);
+  min-height: 100vh;
+}
+
+/* Form Labels */
+.form-label {
+  color: var(--gray-700);
+  font-weight: 500;
+}
+
+/* Input Placeholders */
+::placeholder {
+  color: var(--gray-400) !important;
+}
+
+/* Select Dropdowns */
+.form-select {
+  color: var(--gray-700);
+  border-color: var(--gray-300);
+}
+
+.form-select:focus {
+  border-color: var(--primary-color);
+  box-shadow: 0 0 0 0.2rem rgba(46, 204, 113, 0.25);
+}
+
+/* Invalid Form Controls */
+.form-control.is-invalid {
+  border-color: var(--danger);
+}
+
+.invalid-feedback {
+  color: var(--danger);
+}
+
+/* Card Headers */
+.card-header {
+  background-color: white;
+  border-bottom: 1px solid var(--gray-200);
+  color: var(--gray-700);
+}
+
+/* Table Headers */
+th {
+  font-weight: 600;
+  color: var(--gray-700);
+}
+
+/* Links */
+a {
+  color: var(--blue);
+  text-decoration: none;
+}
+
+a:hover {
+  color: var(--blue-dark);
+  text-decoration: underline;
+} 
