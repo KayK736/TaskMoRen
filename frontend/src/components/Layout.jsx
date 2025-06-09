@@ -10,7 +10,6 @@ const Layout = ({ children }) => {
   const navItems = [
     { path: '/', label: 'Home', icon: <HouseFill /> },
     { path: '/tasks', label: 'Tasks', icon: <ListTask /> },
-    { path: '/add-task', label: 'New Task', icon: <PlusLg /> },
     { path: '/schedule-plan', label: 'Schedule Plan', icon: <CalendarCheck /> },
     { path: '/notifications', label: 'Notifications', icon: <BellFill /> },
     { path: '/about-us', label: 'About Us', icon: <InfoCircleFill /> },

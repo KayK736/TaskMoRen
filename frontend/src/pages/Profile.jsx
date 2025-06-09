@@ -94,7 +94,14 @@ const Profile = () => {
 
   return (
     <div>
-      <h1 className="h2 mb-4">Profile Settings</h1>
+      <div className="schedule-header">
+        <h1>Profile Settings</h1>
+        <div className="schedule-actions">
+          <button className="btn-export" onClick={() => console.log('Export Profile PDF')}>
+            Export PDF
+          </button>
+        </div>
+      </div>
 
       {error && (
         <div className="alert alert-danger" role="alert">

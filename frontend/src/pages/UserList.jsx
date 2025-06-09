@@ -58,7 +58,14 @@ const UserList = () => {
 
   return (
     <div>
-      <h1 className="h2 mb-4">User Management</h1>
+      <div className="schedule-header">
+        <h1>User Management</h1>
+        <div className="schedule-actions">
+          <button className="btn-export" onClick={() => console.log('Export User List PDF')}>
+            Export PDF
+          </button>
+        </div>
+      </div>
 
       {error && (
         <div className="alert alert-danger" role="alert">
