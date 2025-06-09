@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
+import '../styles/common.css';
 
 const Dashboard = () => {
   const [stats, setStats] = useState({
@@ -73,7 +74,14 @@ const Dashboard = () => {
 
   return (
     <div>
-      <h1 className="h2 mb-4">Dashboard</h1>
+      <div className="schedule-header">
+        <h1>Dashboard</h1>
+        <div className="schedule-actions">
+          <button className="btn-export" onClick={() => console.log('Export Dashboard PDF')}>
+            Export PDF
+          </button>
+        </div>
+      </div>
 
       {error && (
         <div className="alert alert-danger" role="alert">

@@ -68,7 +68,14 @@ const Notifications = () => {
 
   return (
     <div>
-      <h1 className="h2 mb-4">Notifications</h1>
+      <div className="schedule-header">
+        <h1>Notifications</h1>
+        <div className="schedule-actions">
+          <button className="btn-export" onClick={() => console.log('Export Notifications PDF')}>
+            Export PDF
+          </button>
+        </div>
+      </div>
 
       {error && (
         <div className="alert alert-danger" role="alert">
