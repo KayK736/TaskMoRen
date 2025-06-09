@@ -20,6 +20,7 @@ const SchedulePlan = () => {
   const [showForm, setShowForm] = useState(false);
   const [selectedSchedule, setSelectedSchedule] = useState(null);
   const [showModal, setShowModal] = useState(false);
+  const [filter, setFilter] = useState('all');
 
   useEffect(() => {
     fetchSchedules();
@@ -130,6 +131,11 @@ const SchedulePlan = () => {
     setShowModal(true);
   };
 
+  const filteredSchedules = schedules.filter(schedule => {
+    if (filter === 'all') return true;
+    return schedule.type === filter;
+  });
+
   if (loading) return <div>Loading...</div>;
   if (error) return <div className="error-message">{error}</div>;
 
@@ -140,9 +146,6 @@ const SchedulePlan = () => {
         <div className="schedule-actions">
           <button className="btn-export" onClick={handleExportPDF}>
             Export PDF
-          </button>
-          <button className="btn-add" onClick={() => setShowForm(true)}>
-            Add Schedule
           </button>
         </div>
       </div>
@@ -158,6 +161,39 @@ const SchedulePlan = () => {
           {success}
         </div>
       )}
+
+      <div className="task-filters">
+        <button
+          className={`filter-btn ${filter === 'all' ? 'active' : ''}`}
+          onClick={() => setFilter('all')}
+        >
+          All
+        </button>
+        <button
+          className={`filter-btn ${filter === 'meeting' ? 'active' : ''}`}
+          onClick={() => setFilter('meeting')}
+        >
+          Meeting
+        </button>
+        <button
+          className={`filter-btn ${filter === 'task' ? 'active' : ''}`}
+          onClick={() => setFilter('task')}
+        >
+          Task
+        </button>
+        <button
+          className={`filter-btn ${filter === 'reminder' ? 'active' : ''}`}
+          onClick={() => setFilter('reminder')}
+        >
+          Reminder
+        </button>
+        <button
+          className={`filter-btn ${filter === 'other' ? 'active' : ''}`}
+          onClick={() => setFilter('other')}
+        >
+          Other
+        </button>
+      </div>
 
       <div className="schedule-grid">
         <div className="schedule-form-container">
@@ -281,14 +317,14 @@ const SchedulePlan = () => {
               <h3>Your Schedules</h3>
             </div>
             <div className="schedule-list-body">
-              {schedules.length === 0 ? (
+              {filteredSchedules.length === 0 ? (
                 <div className="empty-state">
                   <p>No schedules found</p>
                   <p className="empty-state-sub">Add a new schedule to get started</p>
                 </div>
               ) : (
                 <div className="schedule-list">
-                  {schedules.map(schedule => (
+                  {filteredSchedules.map(schedule => (
                     <div key={schedule._id} className="schedule-item">
                       <div className="schedule-item-header">
                         <div className="schedule-item-title">
@@ -297,7 +333,7 @@ const SchedulePlan = () => {
                           </span>
                           <h4>{schedule.title}</h4>
                         </div>
-                        <span className={`priority-badge priority-${schedule.priority}`}>
+                        <span className={`priority-badge priority-${getPriorityColor(schedule.priority)}`}>
                           {schedule.priority}
                         </span>
                       </div>
@@ -347,6 +383,104 @@ const SchedulePlan = () => {
           </div>
         </div>
       </div>
+
+      {/* Edit Schedule Modal */}
+      {showModal && selectedSchedule && (
+        <div className="modal-overlay">
+          <div className="modal-content">
+            <h2>Edit Schedule</h2>
+            <form onSubmit={async (e) => {
+              e.preventDefault();
+              try {
+                await axios.put(`http://localhost:5000/api/schedules/${selectedSchedule._id}`, selectedSchedule);
+                setSuccess('Schedule updated successfully');
+                setShowModal(false);
+                fetchSchedules();
+              } catch (error) {
+                console.error('Error updating schedule:', error);
+                setError('Error updating schedule');
+              }
+            }}>
+              <div className="form-group">
+                <label>Title</label>
+                <input
+                  type="text"
+                  className="form-control"
+                  value={selectedSchedule.title}
+                  onChange={(e) => setSelectedSchedule({ ...selectedSchedule, title: e.target.value })}
+                  required
+                />
+              </div>
+              <div className="form-group">
+                <label>Description</label>
+                <textarea
+                  className="form-control"
+                  value={selectedSchedule.description}
+                  onChange={(e) => setSelectedSchedule({ ...selectedSchedule, description: e.target.value })}
+                />
+              </div>
+              <div className="form-group">
+                <label>Date</label>
+                <input
+                  type="date"
+                  className="form-control"
+                  value={selectedSchedule.date ? new Date(selectedSchedule.date).toISOString().split('T')[0] : ''}
+                  onChange={(e) => setSelectedSchedule({ ...selectedSchedule, date: e.target.value })}
+                  required
+                />
+              </div>
+              <div className="form-group">
+                <label>Start Time</label>
+                <input
+                  type="time"
+                  className="form-control"
+                  value={selectedSchedule.startTime}
+                  onChange={(e) => setSelectedSchedule({ ...selectedSchedule, startTime: e.target.value })}
+                  required
+                />
+              </div>
+              <div className="form-group">
+                <label>End Time (Optional)</label>
+                <input
+                  type="time"
+                  className="form-control"
+                  value={selectedSchedule.endTime || ''}
+                  onChange={(e) => setSelectedSchedule({ ...selectedSchedule, endTime: e.target.value })}
+                />
+              </div>
+              <div className="form-group">
+                <label>Type</label>
+                <select
+                  className="form-control"
+                  value={selectedSchedule.type}
+                  onChange={(e) => setSelectedSchedule({ ...selectedSchedule, type: e.target.value })}
+                >
+                  <option value="meeting">Meeting</option>
+                  <option value="task">Task</option>
+                  <option value="reminder">Reminder</option>
+                  <option value="other">Other</option>
+                </select>
+              </div>
+              <div className="form-group">
+                <label>Priority</label>
+                <select
+                  className="form-control"
+                  value={selectedSchedule.priority}
+                  onChange={(e) => setSelectedSchedule({ ...selectedSchedule, priority: e.target.value })}
+                >
+                  <option value="low">Low</option>
+                  <option value="medium">Medium</option>
+                  <option value="high">High</option>
+                </select>
+              </div>
+              <div className="modal-actions">
+                <button type="submit" className="btn-submit">Save Changes</button>
+                <button type="button" className="btn-cancel" onClick={() => setShowModal(false)}>Cancel</button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
