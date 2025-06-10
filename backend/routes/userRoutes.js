@@ -1,95 +1,40 @@
 const express = require('express');
 const router = express.Router();
-const User = require('../models/User');
-const bcrypt = require('bcryptjs');
+const auth = require('../middleware/auth'); // Assuming auth middleware is in ../middleware/auth.js
+const userController = require('../controllers/userController');
+const multer = require('multer');
+const path = require('path');
 
-// Get all users
-router.get('/', async (req, res) => {
-  try {
-    const users = await User.find().select('-password');
-    res.json(users);
-  } catch (error) {
-    res.status(500).json({ message: error.message });
-  }
+// Set up multer for file storage
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    cb(null, 'uploads/'); // Files will be stored in the 'uploads' directory
+  },
+  filename: (req, file, cb) => {
+    cb(null, `${file.fieldname}-${Date.now()}${path.extname(file.originalname)}`);
+  },
 });
 
-// Get user profile
-router.get('/profile', async (req, res) => {
-  try {
-    // For now, return the first user as a mock profile
-    const user = await User.findOne().select('-password');
-    if (!user) {
-      return res.status(404).json({ message: 'User not found' });
-    }
-    res.json(user);
-  } catch (error) {
-    res.status(500).json({ message: error.message });
-  }
-});
+const upload = multer({ storage });
 
-// Update user profile
-router.put('/profile', async (req, res) => {
-  try {
-    // For now, update the first user as a mock profile
-    const user = await User.findOne();
-    if (!user) {
-      return res.status(404).json({ message: 'User not found' });
-    }
+// Get authenticated user profile
+router.get('/profile', auth, userController.getProfile);
 
-    if (req.body.name) user.name = req.body.name;
-    if (req.body.email) user.email = req.body.email;
+// Update authenticated user profile (name only)
+router.put('/profile', auth, userController.updateProfile);
 
-    if (req.body.newPassword) {
-      if (!req.body.currentPassword) {
-        return res.status(400).json({ message: 'Current password is required' });
-      }
+// Change authenticated user password
+router.put('/profile/password', auth, userController.changePassword);
 
-      const isMatch = await bcrypt.compare(req.body.currentPassword, user.password);
-      if (!isMatch) {
-        return res.status(400).json({ message: 'Current password is incorrect' });
-      }
+// Upload authenticated user profile picture
+router.post('/profile/picture', auth, upload.single('profilePicture'), userController.uploadProfilePicture);
 
-      const salt = await bcrypt.genSalt(10);
-      user.password = await bcrypt.hash(req.body.newPassword, salt);
-    }
+// Delete authenticated user account
+router.delete('/profile', auth, userController.deleteAccount);
 
-    const updatedUser = await user.save();
-    res.json({
-      _id: updatedUser._id,
-      name: updatedUser.name,
-      email: updatedUser.email,
-      role: updatedUser.role,
-      isActive: updatedUser.isActive
-    });
-  } catch (error) {
-    res.status(400).json({ message: error.message });
-  }
-});
-
-// Update user
-router.put('/:id', async (req, res) => {
-  try {
-    const user = await User.findById(req.params.id);
-    if (!user) {
-      return res.status(404).json({ message: 'User not found' });
-    }
-
-    if (req.body.name) user.name = req.body.name;
-    if (req.body.email) user.email = req.body.email;
-    if (req.body.role) user.role = req.body.role;
-    if (req.body.isActive !== undefined) user.isActive = req.body.isActive;
-
-    const updatedUser = await user.save();
-    res.json({
-      _id: updatedUser._id,
-      name: updatedUser.name,
-      email: updatedUser.email,
-      role: updatedUser.role,
-      isActive: updatedUser.isActive
-    });
-  } catch (error) {
-    res.status(400).json({ message: error.message });
-  }
-});
+// Admin only routes (if needed, keep existing or modify)
+// Example: Get all users (needs admin role check in auth middleware or a separate admin middleware)
+// router.get('/', auth, userController.getUsers); // Assuming getUsers is also moved to controller
+// router.put('/:id', auth, userController.updateUser); // Assuming updateUser is also moved to controller
 
 module.exports = router;

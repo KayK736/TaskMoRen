@@ -24,11 +24,10 @@ const TopNav = () => {
               <span className="profile-role">{user.role || 'N/A'}</span>
             </div>
             {user.profilePicture ? (
-              <img src={user.profilePicture} alt="Profile" className="profile-avatar-img" />
+              <img src={`http://localhost:5000${user.profilePicture}`} alt="Profile" className="profile-avatar-img" />
             ) : (
               <div className="profile-avatar">{user.name ? user.name.charAt(0).toUpperCase() : 'U'}</div>
             )}
-            <button onClick={logout} className="btn-logout">Logout</button>
           </div>
         ) : (
           <>

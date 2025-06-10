@@ -1,25 +1,31 @@
 import React, { useState, useEffect, useContext } from 'react';
 import axios from 'axios';
 import { AuthContext } from '../context/AuthContext';
+import { useNavigate } from 'react-router-dom';
+import '../styles/Profile.css';
 
 const Profile = () => {
-  const { user, token, logout } = useContext(AuthContext);
+  const { user, token, logout, login } = useContext(AuthContext);
+  const navigate = useNavigate();
+
   const [formData, setFormData] = useState({
     name: '',
-    email: '',
     currentPassword: '',
     newPassword: '',
     confirmPassword: ''
   });
+
+  const [profilePictureFile, setProfilePictureFile] = useState(null);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
+  const [showSettings, setShowSettings] = useState(false);
+  const [showDeleteConfirmation, setShowDeleteConfirmation] = useState(false);
 
   useEffect(() => {
     if (user) {
       setFormData(prev => ({
         ...prev,
         name: user.name || '',
-        email: user.email || ''
       }));
     }
   }, [user]);
@@ -32,7 +38,11 @@ const Profile = () => {
     }));
   };
 
-  const handleSubmit = async (e) => {
+  const handleProfilePictureChange = (e) => {
+    setProfilePictureFile(e.target.files[0]);
+  };
+
+  const handleProfileUpdate = async (e) => {
     e.preventDefault();
     setError('');
     setSuccess('');
@@ -42,51 +52,106 @@ const Profile = () => {
       return;
     }
 
-    // Validate passwords if changing
-    if (formData.newPassword) {
-      if (formData.newPassword !== formData.confirmPassword) {
-        setError('New passwords do not match');
-        return;
-      }
-      if (!formData.currentPassword) {
-        setError('Current password is required to set a new password');
-        return;
-      }
-    }
-
     try {
       const updateData = {
         name: formData.name,
-        email: formData.email
       };
-
-      if (formData.newPassword) {
-        updateData.currentPassword = formData.currentPassword;
-        updateData.newPassword = formData.newPassword;
-      }
 
       await axios.put('http://localhost:5000/api/users/profile', updateData, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
       });
-      setSuccess('Profile updated successfully');
+
+      if (profilePictureFile) {
+        const formData = new FormData();
+        formData.append('profilePicture', profilePictureFile);
+
+        const uploadResponse = await axios.post('http://localhost:5000/api/users/profile/picture', formData, {
+          headers: {
+            'Content-Type': 'multipart/form-data',
+            Authorization: `Bearer ${token}`,
+          },
+        });
+        login({ ...user, profilePicture: uploadResponse.data.profilePicture }, token);
+      }
       
-      // Clear password fields
+      setSuccess('Profile updated successfully');
+      if (user) user.name = formData.name;
+
+    } catch (error) {
+      console.error('Error updating profile:', error);
+      setError(error.response?.data?.message || 'Error updating profile');
+    }
+  };
+
+  const handlePasswordChange = async (e) => {
+    e.preventDefault();
+    setError('');
+    setSuccess('');
+
+    if (!user) {
+      setError('No user logged in.');
+      return;
+    }
+
+    if (formData.newPassword !== formData.confirmPassword) {
+      setError('New passwords do not match');
+      return;
+    }
+    if (!formData.currentPassword) {
+      setError('Current password is required to set a new password');
+      return;
+    }
+
+    try {
+      const updateData = {
+        currentPassword: formData.currentPassword,
+        newPassword: formData.newPassword,
+      };
+
+      await axios.put('http://localhost:5000/api/users/profile/password', updateData, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      setSuccess('Password updated successfully');
       setFormData(prev => ({
         ...prev,
         currentPassword: '',
         newPassword: '',
         confirmPassword: ''
       }));
-      // Potentially update user in context if backend returns updated user data
-      // For now, re-fetch profile to ensure consistency if any changes are applied at server side.
-      // Or better, update AuthContext with updated user data after successful update
-      // setUser({ ...user, name: formData.name, email: formData.email }); // if backend only updates these
 
     } catch (error) {
-      console.error('Error updating profile:', error);
-      setError(error.response?.data?.message || 'Error updating profile');
+      console.error('Error changing password:', error);
+      setError(error.response?.data?.message || 'Error changing password');
+    }
+  };
+
+  const handleDeleteAccount = async () => {
+    setError('');
+    setSuccess('');
+    setShowDeleteConfirmation(false);
+
+    if (!user) {
+      setError('No user logged in.');
+      return;
+    }
+
+    try {
+      await axios.delete('http://localhost:5000/api/users/profile', {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      setSuccess('Account deleted successfully. Redirecting to login...');
+      logout();
+      navigate('/login');
+
+    } catch (error) {
+      console.error('Error deleting account:', error);
+      setError(error.response?.data?.message || 'Error deleting account');
     }
   };
 
@@ -99,8 +164,8 @@ const Profile = () => {
       <div className="schedule-header">
         <h1>Profile Settings</h1>
         <div className="schedule-actions">
-          <button className="btn-export" onClick={() => console.log('Export Profile PDF')}>
-            Export PDF
+          <button className="btn-export" onClick={() => setShowSettings(!showSettings)}>
+            {showSettings ? 'Back to Profile' : 'Settings'}
           </button>
         </div>
       </div>
@@ -117,108 +182,161 @@ const Profile = () => {
         </div>
       )}
 
-      <div className="row">
-        <div className="col-md-6">
-          <div className="card mb-4">
-            <div className="card-header">
-              <h3 className="h5 mb-0">Profile Information</h3>
+      {!showSettings ? (
+        <div className="row">
+          <div className="col-md-8 offset-md-2">
+            <div className="card mb-4">
+              <div className="card-header">
+                <h3 className="h5 mb-0">Your Profile</h3>
+              </div>
+              <div className="card-body">
+                <div className="profile-display-item profile-avatar-display">
+                  {user.profilePicture ? (
+                    <img src={`http://localhost:5000${user.profilePicture}`} alt="Profile" className="profile-img-preview" />
+                  ) : (
+                    <div className="profile-avatar-placeholder">
+                      {user.name ? user.name.charAt(0).toUpperCase() : 'U'}
+                    </div>
+                  )}
+                </div>
+                <div className="profile-display-item">
+                  <strong>Name:</strong> {user.name}
+                </div>
+                <div className="profile-display-item">
+                  <strong>Email:</strong> {user.email}
+                </div>
+              </div>
             </div>
-            <div className="card-body">
-              <form onSubmit={handleSubmit}>
-                <div className="mb-3">
-                  <label htmlFor="name" className="form-label">Name</label>
-                  <input
-                    type="text"
-                    className="form-control"
-                    id="name"
-                    name="name"
-                    value={formData.name}
-                    onChange={handleChange}
-                    required
-                  />
-                </div>
+          </div>
+        </div>
+      ) : (
+        <div className="row">
+          <div className="col-md-8 offset-md-2">
+            <div className="card mb-4">
+              <div className="card-header">
+                <h3 className="h5 mb-0">Edit Profile Information</h3>
+              </div>
+              <div className="card-body">
+                <form onSubmit={handleProfileUpdate}>
+                  <div className="mb-3 text-center">
+                    {user.profilePicture ? (
+                      <img src={`http://localhost:5000${user.profilePicture}`} alt="Profile" className="profile-img-preview" />
+                    ) : (
+                      <div className="profile-avatar-placeholder">
+                        {user.name ? user.name.charAt(0).toUpperCase() : 'U'}
+                      </div>
+                    )}
+                    <label htmlFor="profilePicture" className="form-label mt-2">Change Profile Picture</label>
+                    <input
+                      type="file"
+                      className="form-control"
+                      id="profilePicture"
+                      name="profilePicture"
+                      accept="image/*"
+                      onChange={handleProfilePictureChange}
+                    />
+                  </div>
+                  <div className="mb-3">
+                    <label htmlFor="name" className="form-label">Name</label>
+                    <input
+                      type="text"
+                      className="form-control"
+                      id="name"
+                      name="name"
+                      value={formData.name}
+                      onChange={handleChange}
+                      required
+                    />
+                  </div>
+                  <div className="mb-3">
+                    <label htmlFor="email" className="form-label">Email</label>
+                    <input
+                      type="email"
+                      className="form-control"
+                      id="email"
+                      name="email"
+                      value={user.email}
+                      readOnly
+                    />
+                  </div>
+                  <button type="submit" className="btn btn-primary">
+                    Update Profile
+                  </button>
+                </form>
 
-                <div className="mb-3">
-                  <label htmlFor="email" className="form-label">Email</label>
-                  <input
-                    type="email"
-                    className="form-control"
-                    id="email"
-                    name="email"
-                    value={formData.email}
-                    onChange={handleChange}
-                    required
-                  />
-                </div>
+                <hr className="my-4" />
 
-                <div className="mb-3">
-                  <label htmlFor="currentPassword" className="form-label">Current Password</label>
-                  <input
-                    type="password"
-                    className="form-control"
-                    id="currentPassword"
-                    name="currentPassword"
-                    value={formData.currentPassword}
-                    onChange={handleChange}
-                  />
-                </div>
+                <h4 className="h5 mb-3">Change Password</h4>
+                <form onSubmit={handlePasswordChange}>
+                  <div className="mb-3">
+                    <label htmlFor="currentPassword" className="form-label">Current Password</label>
+                    <input
+                      type="password"
+                      className="form-control"
+                      id="currentPassword"
+                      name="currentPassword"
+                      value={formData.currentPassword}
+                      onChange={handleChange}
+                    />
+                  </div>
 
-                <div className="mb-3">
-                  <label htmlFor="newPassword" className="form-label">New Password</label>
-                  <input
-                    type="password"
-                    className="form-control"
-                    id="newPassword"
-                    name="newPassword"
-                    value={formData.newPassword}
-                    onChange={handleChange}
-                  />
-                </div>
+                  <div className="mb-3">
+                    <label htmlFor="newPassword" className="form-label">New Password</label>
+                    <input
+                      type="password"
+                      className="form-control"
+                      id="newPassword"
+                      name="newPassword"
+                      value={formData.newPassword}
+                      onChange={handleChange}
+                    />
+                  </div>
 
-                <div className="mb-3">
-                  <label htmlFor="confirmPassword" className="form-label">Confirm New Password</label>
-                  <input
-                    type="password"
-                    className="form-control"
-                    id="confirmPassword"
-                    name="confirmPassword"
-                    value={formData.confirmPassword}
-                    onChange={handleChange}
-                  />
-                </div>
+                  <div className="mb-3">
+                    <label htmlFor="confirmPassword" className="form-label">Confirm New Password</label>
+                    <input
+                      type="password"
+                      className="form-control"
+                      id="confirmPassword"
+                      name="confirmPassword"
+                      value={formData.confirmPassword}
+                      onChange={handleChange}
+                    />
+                  </div>
 
-                <button type="submit" className="btn btn-primary">
-                  Update Profile
+                  <button type="submit" className="btn btn-warning">
+                    Change Password
+                  </button>
+                </form>
+
+                <hr className="my-4" />
+
+                <h4 className="h5 mb-3">Account Management</h4>
+                <button 
+                  className="btn btn-danger" 
+                  onClick={() => setShowDeleteConfirmation(true)}
+                >
+                  Delete Account
                 </button>
-              </form>
-            </div>
-          </div>
-        </div>
 
-        <div className="col-md-6">
-          <div className="card">
-            <div className="card-header">
-              <h3 className="h5 mb-0">Account Information</h3>
-            </div>
-            <div className="card-body">
-              {user.profilePicture && (
-                <div className="text-center mb-3">
-                  <img
-                    src={user.profilePicture}
-                    alt="Profile"
-                    className="img-thumbnail rounded-circle"
-                    style={{ width: '100px', height: '100px', objectFit: 'cover' }}
-                  />
-                </div>
-              )}
-              <p><strong>User ID:</strong> {user.id}</p>
-              <p><strong>Role:</strong> {user.role}</p>
-              <p><strong>Account Status:</strong> {user.isActive ? 'Active' : 'Inactive'}</p>
-              <button onClick={logout} className="btn btn-danger mt-3">Logout</button>
+                {showDeleteConfirmation && (
+                  <div className="alert alert-warning mt-3">
+                    <p>Are you sure you want to delete your account? This action cannot be undone.</p>
+                    <button className="btn btn-danger me-2" onClick={handleDeleteAccount}>
+                      Yes, Delete My Account
+                    </button>
+                    <button className="btn btn-secondary" onClick={() => setShowDeleteConfirmation(false)}>
+                      Cancel
+                    </button>
+                  </div>
+                )}
+
+              </div>
             </div>
           </div>
         </div>
-      </div>
+      )}
+
     </div>
   );
 };

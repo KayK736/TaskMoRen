@@ -13,6 +13,7 @@ import SchedulePlan from './pages/SchedulePlan';
 import MyFirst from './pages/myFirst';
 import LoginPage from './pages/LoginPage';
 import SignUpPage from './pages/SignUpPage';
+import ProtectedRoute from './components/ProtectedRoute';
 
 function App() {
   return (
@@ -24,20 +25,22 @@ function App() {
         <Route
           path="/*"
           element={
-            <Layout>
-              <Routes>
-                <Route path="dashboard" element={<Dashboard />} />
-                <Route path="tasks" element={<TaskList />} />
-                <Route path="add-task" element={<TaskForm />} />
-                <Route path="tasks/:id" element={<TaskDetail />} />
-                <Route path="tasks/:id/edit" element={<TaskForm />} />
-                <Route path="profile" element={<Profile />} />
-                <Route path="notifications" element={<Notifications />} />
-                <Route path="about-us" element={<AboutUs />} />
-                <Route path="contact-us" element={<ContactUs />} />
-                <Route path="schedule-plan" element={<SchedulePlan />} />
-              </Routes>
-            </Layout>
+            <ProtectedRoute>
+              <Layout>
+                <Routes>
+                  <Route path="dashboard" element={<Dashboard />} />
+                  <Route path="tasks" element={<TaskList />} />
+                  <Route path="add-task" element={<TaskForm />} />
+                  <Route path="tasks/:id" element={<TaskDetail />} />
+                  <Route path="tasks/:id/edit" element={<TaskForm />} />
+                  <Route path="profile" element={<Profile />} />
+                  <Route path="notifications" element={<Notifications />} />
+                  <Route path="about-us" element={<AboutUs />} />
+                  <Route path="contact-us" element={<ContactUs />} />
+                  <Route path="schedule-plan" element={<SchedulePlan />} />
+                </Routes>
+              </Layout>
+            </ProtectedRoute>
           }
         />
       </Routes>
