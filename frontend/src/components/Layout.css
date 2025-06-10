@@ -1,5 +1,6 @@
 .layout {
   display: flex;
+  flex-direction: column; /* Changed to column to stack TopNav, Sidebar, and Main content */
   min-height: 100vh;
   background: #f5f5f5;
   position: relative;
@@ -98,11 +99,17 @@
 
 /* Main Content */
 .main-content {
-  flex: 1;
+  flex: 1; /* Allows main-content to grow and take available space */
+  display: flex;
+  flex-direction: column;
   margin-left: 260px;
   padding: 2rem;
-  min-height: 100vh;
+  min-height: calc(100vh - 75px); /* Ensure main content pushes footer down */
   margin-top: 75px; /* Adjust margin-top to match TopNav height */
+}
+
+.main-content-wrapper {
+  flex: 1; /* This wrapper will now take up the remaining space */
 }
 
 /* Custom Scrollbar */
@@ -132,6 +139,7 @@
   .main-content {
     margin-left: 0;
     padding: 1.5rem;
+    min-height: calc(100vh - 75px); /* Ensure main content pushes footer down on mobile */
     margin-top: 75px; /* Adjust margin-top to match TopNav height */
   }
 }

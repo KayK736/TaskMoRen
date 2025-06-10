@@ -4,6 +4,7 @@ import { HouseFill, ListTask, PlusLg, CalendarCheck, BellFill, InfoCircleFill, E
 import '../components/Layout.css';
 import TopNav from './TopNav';
 import { AuthContext } from '../context/AuthContext';
+import Footer from './Footer';
 
 const Layout = ({ children }) => {
   const location = useLocation();
@@ -51,7 +52,10 @@ const Layout = ({ children }) => {
         </div>
       </aside>
       <main className="main-content">
-        {children}
+        <div className="main-content-wrapper">
+          {children}
+        </div>
+        <Footer />
       </main>
     </div>
   );

@@ -214,7 +214,7 @@ const Dashboard = () => {
 
         <div className="col-md-4">
           <div className="card">
-            <div className="card-header">
+            <div className="card-header d-flex justify-content-between align-items-center">
               <h5 className="mb-0">Quick Actions</h5>
             </div>
             <div className="card-body">
@@ -240,9 +240,8 @@ const Dashboard = () => {
         </div>
       </div>
 
-      {/* Recent Schedules Section */}
-      <div className="row mt-4">
-        <div className="col-md-8">
+      <div className="row mt-4 mb-5">
+        <div className="col-md-12">
           <div className="card">
             <div className="card-header d-flex justify-content-between align-items-center">
               <h5 className="mb-0">Recent Schedules</h5>
