@@ -1,0 +1,72 @@
+.profile-img-preview {
+  width: 150px;
+  height: 150px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 4px solid #00bcd4;
+  margin-bottom: 20px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+.profile-avatar-placeholder {
+  width: 150px;
+  height: 150px;
+  border-radius: 50%;
+  background-color: #e0e0e0;
+  color: #757575;
+  font-size: 3em;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 0 auto 20px auto;
+  border: 4px solid #00bcd4;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+.profile-display-item {
+  margin-bottom: 10px;
+  font-size: 1.1em;
+  color: #333;
+}
+
+.profile-display-item strong {
+  color: #1a1a1a;
+  margin-right: 5px;
+}
+
+/* Adjustments for the settings view input fields */
+.card-body .form-control[readOnly] {
+  background-color: #f8f9fa;
+  opacity: 1; /* ensure it's not faded */
+}
+
+.card-body .form-label {
+  font-weight: 600;
+  color: #444;
+}
+
+/* Styles for alerts */
+.alert {
+  padding: 15px;
+  margin-bottom: 20px;
+  border: 1px solid transparent;
+  border-radius: 4px;
+}
+
+.alert-success {
+  color: #155724;
+  background-color: #d4edda;
+  border-color: #c3e6cb;
+}
+
+.alert-danger {
+  color: #721c24;
+  background-color: #f8d7da;
+  border-color: #f5c6cb;
+}
+
+.alert-warning {
+  color: #856404;
+  background-color: #fff3cd;
+  border-color: #ffeeba;
+} 

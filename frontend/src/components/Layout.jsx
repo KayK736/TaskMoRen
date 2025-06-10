@@ -1,11 +1,17 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { HouseFill, ListTask, PlusLg, CalendarCheck, BellFill, InfoCircleFill, EnvelopeFill } from 'react-bootstrap-icons';
+import { HouseFill, ListTask, PlusLg, CalendarCheck, BellFill, InfoCircleFill, EnvelopeFill, BoxArrowRight } from 'react-bootstrap-icons';
 import '../components/Layout.css';
 import TopNav from './TopNav';
+import { AuthContext } from '../context/AuthContext';
 
 const Layout = ({ children }) => {
   const location = useLocation();
+  const { logout } = useContext(AuthContext);
+
+  const handleLogout = () => {
+    logout();
+  };
 
   const navItems = [
     { path: '/dashboard', label: 'Home', icon: <HouseFill /> },
@@ -34,6 +40,10 @@ const Layout = ({ children }) => {
               <span className="nav-label">{item.label}</span>
             </Link>
           ))}
+          <button onClick={handleLogout} className="nav-item logout-button">
+            <span className="nav-icon"><BoxArrowRight /></span>
+            <span className="nav-label">Logout</span>
+          </button>
         </nav>
         <div className="sidebar-footer">
           <p>© 2024 TaskMoRen</p>
