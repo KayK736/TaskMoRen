@@ -8,7 +8,7 @@ const Layout = ({ children }) => {
   const location = useLocation();
 
   const navItems = [
-    { path: '/', label: 'Home', icon: <HouseFill /> },
+    { path: '/dashboard', label: 'Home', icon: <HouseFill /> },
     { path: '/tasks', label: 'Tasks', icon: <ListTask /> },
     { path: '/schedule-plan', label: 'Schedule Plan', icon: <CalendarCheck /> },
     { path: '/notifications', label: 'Notifications', icon: <BellFill /> },

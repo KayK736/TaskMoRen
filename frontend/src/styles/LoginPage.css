@@ -1,0 +1,103 @@
+.login-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  text-align: center;
+  background-color: #f0f2f5; /* Light gray background */
+  color: #333; /* Dark gray text */
+}
+
+.login-container h2 {
+  font-size: 2.5em;
+  color: #2c3e50; /* Darker blue-gray for heading */
+  margin-bottom: 30px;
+}
+
+.login-form {
+  background-color: white;
+  padding: 40px;
+  border-radius: 10px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  width: 100%;
+  max-width: 400px;
+}
+
+.form-group {
+  margin-bottom: 20px;
+  text-align: left;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 8px;
+  font-weight: bold;
+  color: #555;
+}
+
+.form-group input[type="email"],
+.form-group input[type="password"] {
+  width: 100%;
+  padding: 12px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  font-size: 1em;
+}
+
+.manual-login-button {
+  background-color: #007bff; /* Blue button */
+  color: white;
+  padding: 12px 20px;
+  font-size: 1em;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  width: 100%;
+  margin-top: 20px;
+}
+
+.manual-login-button:hover {
+  background-color: #0056b3; /* Darker blue on hover */
+}
+
+.separator {
+  margin: 30px 0;
+  color: #888;
+  position: relative;
+  width: 100%;
+  max-width: 400px;
+}
+
+.separator::before, .separator::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  width: 45%;
+  height: 1px;
+  background-color: #ddd;
+}
+
+.separator::before {
+  left: 0;
+}
+
+.separator::after {
+  right: 0;
+}
+
+/* Styling for the GoogleLogin component provided by @react-oauth/google */
+/* The component itself might render a button or a div, so these styles might need adjustment based on actual rendering */
+.GPay_GoogleLogin {
+  width: 100%;
+  max-width: 400px;
+  margin-top: 20px;
+}
+
+/* You might need to inspect the rendered HTML of GoogleLogin to apply more specific styles */
+/* For example, if it renders a button, you can style button within .GPay_GoogleLogin */
+.GPay_GoogleLogin > div > div {
+  width: 100% !important; /* Force full width if Google component doesn't take it naturally */
+  justify-content: center !important;
+} 

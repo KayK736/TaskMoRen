@@ -1,9 +1,11 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import axios from 'axios';
 import { generateSchedulePDF } from '../utils/pdfGenerator';
 import './SchedulePlan.css';
+import { AuthContext } from '../context/AuthContext';
 
 const SchedulePlan = () => {
+  const { token } = useContext(AuthContext);
   const [schedules, setSchedules] = useState([]);
   const [formData, setFormData] = useState({
     title: '',
@@ -23,15 +25,23 @@ const SchedulePlan = () => {
   const [filter, setFilter] = useState('all');
 
   useEffect(() => {
-    fetchSchedules();
-  }, []);
+    if (token) {
+      fetchSchedules();
+    }
+  }, [token]);
 
   const fetchSchedules = async () => {
     try {
-      const response = await axios.get('http://localhost:5000/api/schedules');
+      const config = {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      };
+      const response = await axios.get('http://localhost:5000/api/schedules', config);
       setSchedules(response.data);
       setLoading(false);
     } catch (err) {
+      console.error('Failed to fetch schedules:', err);
       setError('Failed to fetch schedules');
       setLoading(false);
     }
@@ -51,12 +61,17 @@ const SchedulePlan = () => {
     setSuccess('');
 
     try {
+      const config = {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      };
       const scheduleData = {
         ...formData,
         ...(formData.endTime ? { endTime: formData.endTime } : {})
       };
 
-      await axios.post('http://localhost:5000/api/schedules', scheduleData);
+      await axios.post('http://localhost:5000/api/schedules', scheduleData, config);
       setSuccess('Schedule created successfully');
       setFormData({
         title: '',
@@ -69,7 +84,7 @@ const SchedulePlan = () => {
       });
       fetchSchedules();
     } catch (error) {
-      console.error('Error creating schedule:', error);
+      console.error('Error creating schedule:', error.response?.data?.message || error.message);
       setError(error.response?.data?.message || 'Error creating schedule');
     }
   };
@@ -77,12 +92,17 @@ const SchedulePlan = () => {
   const handleDelete = async (id) => {
     if (window.confirm('Are you sure you want to delete this schedule?')) {
       try {
-        await axios.delete(`http://localhost:5000/api/schedules/${id}`);
+        const config = {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        };
+        await axios.delete(`http://localhost:5000/api/schedules/${id}`, config);
         setSuccess('Schedule deleted successfully');
         fetchSchedules();
       } catch (error) {
-        console.error('Error deleting schedule:', error);
-        setError('Error deleting schedule');
+        console.error('Error deleting schedule:', error.response?.data?.message || error.message);
+        setError('Error deleting schedule: ' + (error.response?.data?.message || 'Server error'));
       }
     }
   };
@@ -213,7 +233,6 @@ const SchedulePlan = () => {
                     value={formData.title}
                     onChange={handleChange}
                     required
-                    placeholder="Enter schedule title"
                   />
                 </div>
 
@@ -226,36 +245,33 @@ const SchedulePlan = () => {
                     value={formData.description}
                     onChange={handleChange}
                     rows="3"
-                    placeholder="Enter schedule description"
+                  ></textarea>
+                </div>
+
+                <div className="form-group">
+                  <label htmlFor="date">Date</label>
+                  <input
+                    type="date"
+                    className="form-control"
+                    id="date"
+                    name="date"
+                    value={formData.date}
+                    onChange={handleChange}
+                    required
                   />
                 </div>
 
-                <div className="form-row">
-                  <div className="form-group">
-                    <label htmlFor="date">Date</label>
-                    <input
-                      type="date"
-                      className="form-control"
-                      id="date"
-                      name="date"
-                      value={formData.date}
-                      onChange={handleChange}
-                      required
-                    />
-                  </div>
-
-                  <div className="form-group">
-                    <label htmlFor="startTime">Start Time</label>
-                    <input
-                      type="time"
-                      className="form-control"
-                      id="startTime"
-                      name="startTime"
-                      value={formData.startTime}
-                      onChange={handleChange}
-                      required
-                    />
-                  </div>
+                <div className="form-group">
+                  <label htmlFor="startTime">Start Time</label>
+                  <input
+                    type="time"
+                    className="form-control"
+                    id="startTime"
+                    name="startTime"
+                    value={formData.startTime}
+                    onChange={handleChange}
+                    required
+                  />
                 </div>
 
                 <div className="form-group">
@@ -270,40 +286,38 @@ const SchedulePlan = () => {
                   />
                 </div>
 
-                <div className="form-row">
-                  <div className="form-group">
-                    <label htmlFor="type">Type</label>
-                    <select
-                      className="form-control"
-                      id="type"
-                      name="type"
-                      value={formData.type}
-                      onChange={handleChange}
-                    >
-                      <option value="meeting">Meeting</option>
-                      <option value="task">Task</option>
-                      <option value="reminder">Reminder</option>
-                      <option value="other">Other</option>
-                    </select>
-                  </div>
-
-                  <div className="form-group">
-                    <label htmlFor="priority">Priority</label>
-                    <select
-                      className="form-control"
-                      id="priority"
-                      name="priority"
-                      value={formData.priority}
-                      onChange={handleChange}
-                    >
-                      <option value="low">Low</option>
-                      <option value="medium">Medium</option>
-                      <option value="high">High</option>
-                    </select>
-                  </div>
+                <div className="form-group">
+                  <label htmlFor="type">Type</label>
+                  <select
+                    className="form-control"
+                    id="type"
+                    name="type"
+                    value={formData.type}
+                    onChange={handleChange}
+                  >
+                    <option value="meeting">Meeting</option>
+                    <option value="task">Task</option>
+                    <option value="reminder">Reminder</option>
+                    <option value="other">Other</option>
+                  </select>
                 </div>
 
-                <button type="submit" className="btn-submit">
+                <div className="form-group">
+                  <label htmlFor="priority">Priority</label>
+                  <select
+                    className="form-control"
+                    id="priority"
+                    name="priority"
+                    value={formData.priority}
+                    onChange={handleChange}
+                  >
+                    <option value="low">Low</option>
+                    <option value="medium">Medium</option>
+                    <option value="high">High</option>
+                  </select>
+                </div>
+
+                <button type="submit" className="btn btn-primary">
                   Add Schedule
                 </button>
               </form>
@@ -318,168 +332,40 @@ const SchedulePlan = () => {
             </div>
             <div className="schedule-list-body">
               {filteredSchedules.length === 0 ? (
-                <div className="empty-state">
-                  <p>No schedules found</p>
-                  <p className="empty-state-sub">Add a new schedule to get started</p>
-                </div>
+                <p className="text-muted text-center">No schedules found.</p>
               ) : (
-                <div className="schedule-list">
+                <ul className="list-group">
                   {filteredSchedules.map(schedule => (
-                    <div key={schedule._id} className="schedule-item">
-                      <div className="schedule-item-header">
-                        <div className="schedule-item-title">
-                          <span className="schedule-type-icon">
-                            {getTypeIcon(schedule.type)}
-                          </span>
-                          <h4>{schedule.title}</h4>
-                        </div>
-                        <span className={`priority-badge priority-${getPriorityColor(schedule.priority)}`}>
-                          {schedule.priority}
-                        </span>
+                    <li key={schedule._id} className="list-group-item d-flex justify-content-between align-items-center">
+                      <div>
+                        <h5>{getTypeIcon(schedule.type)} {schedule.title}</h5>
+                        <p className="mb-1">{schedule.description}</p>
+                        <small className="text-muted">
+                          {new Date(schedule.date).toLocaleDateString()} | {schedule.startTime}{schedule.endTime && ` - ${schedule.endTime}`} | Priority: <span className={`badge bg-${getPriorityColor(schedule.priority)}`}>{schedule.priority}</span>
+                        </small>
                       </div>
-                      <p className="schedule-description">{schedule.description}</p>
-                      <div className="schedule-details">
-                        <div className="schedule-time">
-                          <span className="detail-label">Date:</span>
-                          <span>{new Date(schedule.date).toLocaleDateString()}</span>
-                        </div>
-                        <div className="schedule-time">
-                          <span className="detail-label">Time:</span>
-                          <span>
-                            {schedule.startTime}
-                            {schedule.endTime ? ` - ${schedule.endTime}` : ''}
-                          </span>
-                        </div>
-                        <div className="schedule-type">
-                          <span className="detail-label">Type:</span>
-                          <span>{schedule.type}</span>
-                        </div>
+                      <div>
+                        <button className="btn btn-sm btn-info me-2" onClick={() => handleEditSchedule(schedule)}>Edit</button>
+                        <button className="btn btn-sm btn-danger" onClick={() => handleDelete(schedule._id)}>Delete</button>
                       </div>
-                      <div className="schedule-actions">
-                        <button
-                          className="btn-view"
-                          onClick={() => handleEditSchedule(schedule)}
-                        >
-                          View
-                        </button>
-                        <button
-                          className="btn-edit"
-                          onClick={() => handleEditSchedule(schedule)}
-                        >
-                          Edit
-                        </button>
-                        <button
-                          className="btn-delete"
-                          onClick={() => handleDelete(schedule._id)}
-                        >
-                          Delete
-                        </button>
-                      </div>
-                    </div>
+                    </li>
                   ))}
-                </div>
+                </ul>
               )}
             </div>
           </div>
         </div>
       </div>
 
-      {/* Edit Schedule Modal */}
+      {/* Schedule Edit Modal */}
       {showModal && selectedSchedule && (
-        <div className="modal-overlay">
-          <div className="modal-content">
-            <h2>Edit Schedule</h2>
-            <form onSubmit={async (e) => {
-              e.preventDefault();
-              try {
-                await axios.put(`http://localhost:5000/api/schedules/${selectedSchedule._id}`, selectedSchedule);
-                setSuccess('Schedule updated successfully');
-                setShowModal(false);
-                fetchSchedules();
-              } catch (error) {
-                console.error('Error updating schedule:', error);
-                setError('Error updating schedule');
-              }
-            }}>
-              <div className="form-group">
-                <label>Title</label>
-                <input
-                  type="text"
-                  className="form-control"
-                  value={selectedSchedule.title}
-                  onChange={(e) => setSelectedSchedule({ ...selectedSchedule, title: e.target.value })}
-                  required
-                />
-              </div>
-              <div className="form-group">
-                <label>Description</label>
-                <textarea
-                  className="form-control"
-                  value={selectedSchedule.description}
-                  onChange={(e) => setSelectedSchedule({ ...selectedSchedule, description: e.target.value })}
-                />
-              </div>
-              <div className="form-group">
-                <label>Date</label>
-                <input
-                  type="date"
-                  className="form-control"
-                  value={selectedSchedule.date ? new Date(selectedSchedule.date).toISOString().split('T')[0] : ''}
-                  onChange={(e) => setSelectedSchedule({ ...selectedSchedule, date: e.target.value })}
-                  required
-                />
-              </div>
-              <div className="form-group">
-                <label>Start Time</label>
-                <input
-                  type="time"
-                  className="form-control"
-                  value={selectedSchedule.startTime}
-                  onChange={(e) => setSelectedSchedule({ ...selectedSchedule, startTime: e.target.value })}
-                  required
-                />
-              </div>
-              <div className="form-group">
-                <label>End Time (Optional)</label>
-                <input
-                  type="time"
-                  className="form-control"
-                  value={selectedSchedule.endTime || ''}
-                  onChange={(e) => setSelectedSchedule({ ...selectedSchedule, endTime: e.target.value })}
-                />
-              </div>
-              <div className="form-group">
-                <label>Type</label>
-                <select
-                  className="form-control"
-                  value={selectedSchedule.type}
-                  onChange={(e) => setSelectedSchedule({ ...selectedSchedule, type: e.target.value })}
-                >
-                  <option value="meeting">Meeting</option>
-                  <option value="task">Task</option>
-                  <option value="reminder">Reminder</option>
-                  <option value="other">Other</option>
-                </select>
-              </div>
-              <div className="form-group">
-                <label>Priority</label>
-                <select
-                  className="form-control"
-                  value={selectedSchedule.priority}
-                  onChange={(e) => setSelectedSchedule({ ...selectedSchedule, priority: e.target.value })}
-                >
-                  <option value="low">Low</option>
-                  <option value="medium">Medium</option>
-                  <option value="high">High</option>
-                </select>
-              </div>
-              <div className="modal-actions">
-                <button type="submit" className="btn-submit">Save Changes</button>
-                <button type="button" className="btn-cancel" onClick={() => setShowModal(false)}>Cancel</button>
-              </div>
-            </form>
-          </div>
-        </div>
+        <ScheduleEditModal
+          showModal={showModal}
+          setShowModal={setShowModal}
+          schedule={selectedSchedule}
+          fetchSchedules={fetchSchedules}
+          token={token}
+        />
       )}
     </div>
   );

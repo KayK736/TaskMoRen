@@ -1,29 +1,39 @@
-import React from 'react';
-import { Link } from 'react-router-dom';
+import React, { useContext } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 import '../components/TopNav.css';
+import { AuthContext } from '../context/AuthContext';
 
 const TopNav = () => {
-  // Mock authentication status - replace with actual auth context
-  const isAuthenticated = false; // Set to true to see profile section
+  const { user, logout } = useContext(AuthContext);
+  const navigate = useNavigate();
+
+  const handleProfileClick = () => {
+    navigate('/profile');
+  };
 
   return (
     <nav className="top-nav">
       <div className="top-nav-brand">
-        <Link to="/" className="top-nav-logo">TaskMoRen</Link>
+        <Link to="/dashboard" className="top-nav-logo">TaskMoRen</Link>
       </div>
       <div className="top-nav-actions">
-        {isAuthenticated ? (
-          <div className="profile-section">
+        {user ? (
+          <div className="profile-section" onClick={handleProfileClick} style={{ cursor: 'pointer' }}>
             <div className="profile-info">
-              <span className="profile-name">John Doe</span>
-              <span className="profile-role">Admin</span>
+              <span className="profile-name">{user.name || 'User'}</span>
+              <span className="profile-role">{user.role || 'N/A'}</span>
             </div>
-            <div className="profile-avatar">JD</div>
+            {user.profilePicture ? (
+              <img src={user.profilePicture} alt="Profile" className="profile-avatar-img" />
+            ) : (
+              <div className="profile-avatar">{user.name ? user.name.charAt(0).toUpperCase() : 'U'}</div>
+            )}
+            <button onClick={logout} className="btn-logout">Logout</button>
           </div>
         ) : (
           <>
             <Link to="/login" className="btn-login">Login</Link>
-            <Link to="/register" className="btn-signup">Sign Up</Link>
+            <Link to="/signup" className="btn-signup">Sign Up</Link>
           </>
         )}
       </div>

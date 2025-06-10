@@ -1,21 +1,22 @@
 const express = require('express');
 const router = express.Router();
 const Schedule = require('../models/Schedule');
+const auth = require('../middleware/auth'); // Import the auth middleware
 
-// Get all schedules
-router.get('/', async (req, res) => {
+// Get all schedules for the authenticated user
+router.get('/', auth, async (req, res) => {
   try {
-    const schedules = await Schedule.find().sort({ date: 1, startTime: 1 });
+    const schedules = await Schedule.find({ user: req.user.id }).sort({ date: 1, startTime: 1 });
     res.json(schedules);
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
 });
 
-// Get a single schedule
-router.get('/:id', async (req, res) => {
+// Get a single schedule for the authenticated user
+router.get('/:id', auth, async (req, res) => {
   try {
-    const schedule = await Schedule.findById(req.params.id);
+    const schedule = await Schedule.findOne({ _id: req.params.id, user: req.user.id });
     if (!schedule) {
       return res.status(404).json({ message: 'Schedule not found' });
     }
@@ -25,8 +26,8 @@ router.get('/:id', async (req, res) => {
   }
 });
 
-// Create a new schedule
-router.post('/', async (req, res) => {
+// Create a new schedule for the authenticated user
+router.post('/', auth, async (req, res) => {
   try {
     const scheduleData = {
       title: req.body.title,
@@ -34,7 +35,8 @@ router.post('/', async (req, res) => {
       date: req.body.date,
       startTime: req.body.startTime,
       type: req.body.type || 'other',
-      priority: req.body.priority || 'medium'
+      priority: req.body.priority || 'medium',
+      user: req.user.id // Assign the schedule to the authenticated user
     };
 
     // Only add endTime if it's provided
@@ -51,10 +53,10 @@ router.post('/', async (req, res) => {
   }
 });
 
-// Update a schedule
-router.put('/:id', async (req, res) => {
+// Update a schedule for the authenticated user
+router.put('/:id', auth, async (req, res) => {
   try {
-    const schedule = await Schedule.findById(req.params.id);
+    const schedule = await Schedule.findOne({ _id: req.params.id, user: req.user.id });
     if (!schedule) {
       return res.status(404).json({ message: 'Schedule not found' });
     }
@@ -82,10 +84,10 @@ router.put('/:id', async (req, res) => {
   }
 });
 
-// Delete a schedule
-router.delete('/:id', async (req, res) => {
+// Delete a schedule for the authenticated user
+router.delete('/:id', auth, async (req, res) => {
   try {
-    const schedule = await Schedule.findById(req.params.id);
+    const schedule = await Schedule.findOne({ _id: req.params.id, user: req.user.id });
     if (!schedule) {
       return res.status(404).json({ message: 'Schedule not found' });
     }
