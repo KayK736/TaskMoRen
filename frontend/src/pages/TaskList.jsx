@@ -1,10 +1,12 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import axios from 'axios';
 import { Link } from 'react-router-dom';
 import { generateTaskPDF } from '../utils/pdfGenerator';
 import './TaskList.css';
+import { AuthContext } from '../context/AuthContext';
 
 const TaskList = () => {
+  const { token } = useContext(AuthContext);
   const [tasks, setTasks] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
@@ -23,15 +25,23 @@ const TaskList = () => {
   const [showModal, setShowModal] = useState(false);
 
   useEffect(() => {
-    fetchTasks();
-  }, []);
+    if (token) {
+      fetchTasks();
+    }
+  }, [token]);
 
   const fetchTasks = async () => {
     try {
-      const response = await axios.get('http://localhost:5000/api/tasks');
+      const config = {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      };
+      const response = await axios.get('http://localhost:5000/api/tasks', config);
       setTasks(response.data);
       setLoading(false);
     } catch (err) {
+      console.error('Failed to fetch tasks:', err);
       setError('Failed to fetch tasks');
       setLoading(false);
     }
@@ -72,7 +82,12 @@ const TaskList = () => {
 
     setFormLoading(true);
     try {
-      await axios.post('http://localhost:5000/api/tasks', formData);
+      const config = {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      };
+      await axios.post('http://localhost:5000/api/tasks', formData, config);
       setFormLoading(false);
       setFormData({
         title: '',
@@ -83,8 +98,8 @@ const TaskList = () => {
       });
       fetchTasks(); // Refresh tasks after adding a new one
     } catch (error) {
-      console.error('Error saving task:', error);
-      setFormError('Error saving task');
+      console.error('Error saving task:', error.response?.data?.message || error.message);
+      setFormError('Error saving task: ' + (error.response?.data?.message || 'Server error'));
       setFormLoading(false);
     }
   };
@@ -92,11 +107,16 @@ const TaskList = () => {
   const handleDelete = async (id) => {
     if (window.confirm('Are you sure you want to delete this task?')) {
       try {
-        await axios.delete(`http://localhost:5000/api/tasks/${id}`);
+        const config = {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        };
+        await axios.delete(`http://localhost:5000/api/tasks/${id}`, config);
         fetchTasks(); // Refresh tasks after deletion
       } catch (error) {
-        console.error('Error deleting task:', error);
-        setError('Error deleting task');
+        console.error('Error deleting task:', error.response?.data?.message || error.message);
+        setError('Error deleting task: ' + (error.response?.data?.message || 'Server error'));
       }
     }
   };
@@ -359,13 +379,16 @@ const TaskList = () => {
             <form onSubmit={async (e) => {
               e.preventDefault();
               try {
-                await axios.put(`http://localhost:5000/api/tasks/${selectedTask._id}`, selectedTask);
-                // setSuccess('Task updated successfully'); // Removed to avoid interfering with current message flow
+                const config = {
+                  headers: {
+                    Authorization: `Bearer ${token}`,
+                  },
+                };
+                await axios.put(`http://localhost:5000/api/tasks/${selectedTask._id}`, selectedTask, config);
                 setShowModal(false);
                 fetchTasks();
               } catch (error) {
                 console.error('Error updating task:', error);
-                // setError('Error updating task'); // Removed to avoid interfering with current message flow
               }
             }}>
               <div className="form-group">

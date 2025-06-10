@@ -1,9 +1,11 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
 import '../styles/common.css';
+import { AuthContext } from '../context/AuthContext';
 
 const Dashboard = () => {
+  const { token } = useContext(AuthContext);
   const [stats, setStats] = useState({
     totalTasks: 0,
     completedTasks: 0,
@@ -21,14 +23,21 @@ const Dashboard = () => {
   const [error, setError] = useState('');
 
   useEffect(() => {
-    fetchDashboardData();
-  }, []);
+    if (token) {
+      fetchDashboardData();
+    }
+  }, [token]);
 
   const fetchDashboardData = async () => {
     try {
+      const config = {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      };
       const [tasksResponse, schedulesResponse] = await Promise.all([
-        axios.get('http://localhost:5000/api/tasks'),
-        axios.get('http://localhost:5000/api/schedules')
+        axios.get('http://localhost:5000/api/tasks', config),
+        axios.get('http://localhost:5000/api/schedules', config)
       ]);
 
       const tasks = tasksResponse.data;
