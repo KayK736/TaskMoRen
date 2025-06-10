@@ -23,8 +23,10 @@ const UserSchema = new mongoose.Schema({
   },
   isActive: {
     type: Boolean,
-    default: true
+    default: false
   },
+  otp: String,
+  otpExpires: Date,
   createdAt: {
     type: Date,
     default: Date.now

@@ -15,13 +15,19 @@
   margin-bottom: 30px;
 }
 
-.signup-form {
+.signup-form,
+.otp-form {
   background-color: white;
   padding: 40px;
   border-radius: 10px;
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
   width: 100%;
   max-width: 400px;
+}
+
+.otp-form p {
+  margin-bottom: 20px;
+  color: #555;
 }
 
 .form-group {
@@ -37,7 +43,8 @@
 }
 
 .form-group input[type="email"],
-.form-group input[type="password"] {
+.form-group input[type="password"],
+.form-group input[type="text"] {
   width: 100%;
   padding: 12px;
   border: 1px solid #ddd;
@@ -45,7 +52,8 @@
   font-size: 1em;
 }
 
-.manual-signup-button {
+.manual-signup-button,
+.verify-otp-button {
   background-color: #28a745;
   color: white;
   padding: 12px 20px;
@@ -58,8 +66,15 @@
   margin-top: 20px;
 }
 
-.manual-signup-button:hover {
+.manual-signup-button:hover,
+.verify-otp-button:hover {
   background-color: #218838;
+}
+
+.manual-signup-button:disabled,
+.verify-otp-button:disabled {
+  background-color: #cccccc;
+  cursor: not-allowed;
 }
 
 .separator {
@@ -102,4 +117,25 @@
 
 .google-login-button:hover {
   background-color: #c23321;
+}
+
+.alert {
+  padding: 15px;
+  margin-bottom: 20px;
+  border: 1px solid transparent;
+  border-radius: 4px;
+  width: 100%;
+  max-width: 400px;
+}
+
+.alert-success {
+  color: #155724;
+  background-color: #d4edda;
+  border-color: #c3e6cb;
+}
+
+.alert-danger {
+  color: #721c24;
+  background-color: #f8d7da;
+  border-color: #f5c6cb;
 } 
