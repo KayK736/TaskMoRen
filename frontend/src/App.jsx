@@ -14,6 +14,8 @@ import MyFirst from './pages/myFirst';
 import LoginPage from './pages/LoginPage';
 import SignUpPage from './pages/SignUpPage';
 import ProtectedRoute from './components/ProtectedRoute';
+import AdminLogin from './components/AdminLogin';
+import AdminDashboard from './components/AdminDashboard';
 
 function App() {
   return (
@@ -22,10 +24,19 @@ function App() {
         <Route path="/" element={<MyFirst />} />
         <Route path="/login" element={<LoginPage />} />
         <Route path="/signup" element={<SignUpPage />} />
+        <Route path="/admin/login" element={<AdminLogin />} />
+        <Route
+          path="/admin/dashboard"
+          element={
+            <ProtectedRoute isAdminRoute={true} redirectPath="/admin/login">
+              <AdminDashboard />
+            </ProtectedRoute>
+          }
+        />
         <Route
           path="/*"
           element={
-            <ProtectedRoute>
+            <ProtectedRoute redirectPath="/login">
               <Layout>
                 <Routes>
                   <Route path="dashboard" element={<Dashboard />} />

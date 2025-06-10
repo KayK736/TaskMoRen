@@ -1,13 +1,12 @@
 import React, { useState, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { GoogleLogin } from '@react-oauth/google';
-import '../styles/LoginPage.css'; // Assuming you'll add some basic styling
-import { AuthContext } from '../context/AuthContext'; // Import AuthContext
-import axios from 'axios'; // Import axios
+import { AuthContext } from '../context/AuthContext';
+import axios from 'axios';
 
 function LoginPage() {
   const navigate = useNavigate();
-  const { login } = useContext(AuthContext); // Get login function from AuthContext
+  const { login } = useContext(AuthContext);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
@@ -18,7 +17,7 @@ function LoginPage() {
         email,
         password,
       });
-      login(response.data.user, response.data.token); // Use login from AuthContext
+      login(response.data.user, response.data.token);
       navigate('/dashboard');
     } catch (error) {
       console.error('Manual Login Failed:', error.response?.data?.message || error.message);
@@ -32,7 +31,7 @@ function LoginPage() {
       const response = await axios.post('http://localhost:5000/api/auth/google', {
         id_token: credentialResponse.credential,
       });
-      login(response.data.user, response.data.token); // Use login from AuthContext
+      login(response.data.user, response.data.token);
       navigate('/dashboard');
     } catch (error) {
       console.error('Google Login Failed:', error.response?.data?.message || error.message);
@@ -45,41 +44,111 @@ function LoginPage() {
     alert('Google Login was unsuccessful. Please try again.');
   };
 
+  const handleAdminLogin = () => {
+    navigate('/admin/login');
+  };
+
+  // Inline styles
+  const styles = {
+    container: {
+      maxWidth: '400px',
+      margin: '60px auto',
+      padding: '30px',
+      border: '1px solid #ddd',
+      borderRadius: '8px',
+      boxShadow: '0 4px 10px rgba(0,0,0,0.1)',
+      textAlign: 'center',
+      backgroundColor: '#f9f9f9',
+    },
+    formGroup: {
+      marginBottom: '15px',
+      textAlign: 'left',
+    },
+    label: {
+      display: 'block',
+      marginBottom: '5px',
+      fontWeight: 'bold',
+    },
+    input: {
+      width: '100%',
+      padding: '8px',
+      borderRadius: '4px',
+      border: '1px solid #ccc',
+      fontSize: '14px',
+    },
+    button: {
+      width: '100%',
+      padding: '10px',
+      backgroundColor: '#4CAF50',
+      color: 'white',
+      border: 'none',
+      borderRadius: '4px',
+      fontSize: '16px',
+      cursor: 'pointer',
+    },
+    separator: {
+      margin: '20px 0',
+      fontWeight: 'bold',
+      color: '#888',
+    },
+    adminButton: {
+      marginTop: '15px',
+      width: '100%',
+      padding: '10px',
+      backgroundColor: '#555',
+      color: 'white',
+      border: 'none',
+      borderRadius: '4px',
+      fontSize: '14px',
+      cursor: 'pointer',
+    }
+  };
+
   return (
-    <div className="login-container">
+    <div style={styles.container}>
       <h2>Login</h2>
-      <form onSubmit={handleManualLogin} className="login-form">
-        <div className="form-group">
-          <label htmlFor="email">Email:</label>
+      <form onSubmit={handleManualLogin} style={{ textAlign: 'left' }}>
+        <div style={styles.formGroup}>
+          <label htmlFor="email" style={styles.label}>Email:</label>
           <input
             type="email"
             id="email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             required
+            style={styles.input}
           />
         </div>
-        <div className="form-group">
-          <label htmlFor="password">Password:</label>
+        <div style={styles.formGroup}>
+          <label htmlFor="password" style={styles.label}>Password:</label>
           <input
             type="password"
             id="password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             required
+            style={styles.input}
           />
         </div>
-        <button type="submit" className="manual-login-button">
-          Login
-        </button>
+        <button type="submit" style={styles.button}>Login</button>
       </form>
-      <div className="separator">OR</div>
-      <GoogleLogin
-        onSuccess={handleGoogleSuccess}
-        onError={handleGoogleError}
-      />
+
+      <div style={styles.separator}>OR</div>
+
+      <div style={{ marginBottom: '10px' }}>
+        <GoogleLogin
+          onSuccess={handleGoogleSuccess}
+          onError={handleGoogleError}
+        />
+      </div>
+
+      <div className="admin-login-section">
+        <button onClick={handleAdminLogin} style={styles.adminButton}>
+          Admin Login
+        </button>
+      </div>
     </div>
   );
 }
 
-export default LoginPage; 
+export default LoginPage;

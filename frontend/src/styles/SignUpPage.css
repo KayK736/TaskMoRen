@@ -7,6 +7,12 @@
   text-align: center;
   background-color: #f0f2f5;
   color: #333;
+  max-width: 400px;
+  margin: 2rem auto;
+  padding: 2rem;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 .signup-container h2 {
@@ -15,14 +21,16 @@
   margin-bottom: 30px;
 }
 
-.signup-form,
+.signup-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
 .otp-form {
-  background-color: white;
-  padding: 40px;
-  border-radius: 10px;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-  width: 100%;
-  max-width: 400px;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
 }
 
 .otp-form p {
@@ -31,61 +39,48 @@
 }
 
 .form-group {
-  margin-bottom: 20px;
-  text-align: left;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
 }
 
 .form-group label {
-  display: block;
-  margin-bottom: 8px;
-  font-weight: bold;
-  color: #555;
+  font-weight: 500;
 }
 
-.form-group input[type="email"],
-.form-group input[type="password"],
-.form-group input[type="text"] {
-  width: 100%;
-  padding: 12px;
+.form-group input {
+  padding: 0.5rem;
   border: 1px solid #ddd;
-  border-radius: 5px;
-  font-size: 1em;
+  border-radius: 4px;
 }
 
-.manual-signup-button,
-.verify-otp-button {
-  background-color: #28a745;
+.manual-signup-button {
+  padding: 0.75rem;
+  background-color: #4f46e5;
   color: white;
-  padding: 12px 20px;
-  font-size: 1em;
   border: none;
-  border-radius: 5px;
+  border-radius: 4px;
   cursor: pointer;
-  transition: background-color 0.3s ease;
-  width: 100%;
-  margin-top: 20px;
+  font-weight: 500;
 }
 
-.manual-signup-button:hover,
-.verify-otp-button:hover {
-  background-color: #218838;
+.manual-signup-button:hover {
+  background-color: #4338ca;
 }
 
-.manual-signup-button:disabled,
-.verify-otp-button:disabled {
-  background-color: #cccccc;
+.manual-signup-button:disabled {
+  background-color: #9ca3af;
   cursor: not-allowed;
 }
 
 .separator {
-  margin: 30px 0;
-  color: #888;
+  text-align: center;
+  margin: 1rem 0;
   position: relative;
-  width: 100%;
-  max-width: 400px;
 }
 
-.separator::before, .separator::after {
+.separator::before,
+.separator::after {
   content: '';
   position: absolute;
   top: 50%;
@@ -100,6 +95,63 @@
 
 .separator::after {
   right: 0;
+}
+
+.verify-otp-button {
+  padding: 0.75rem;
+  background-color: #4f46e5;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: 500;
+}
+
+.verify-otp-button:hover {
+  background-color: #4338ca;
+}
+
+.verify-otp-button:disabled {
+  background-color: #9ca3af;
+  cursor: not-allowed;
+}
+
+.alert {
+  padding: 0.75rem;
+  border-radius: 4px;
+  margin-bottom: 1rem;
+}
+
+.alert-success {
+  background-color: #dcfce7;
+  color: #166534;
+  border: 1px solid #86efac;
+}
+
+.alert-danger {
+  background-color: #fee2e2;
+  color: #991b1b;
+  border: 1px solid #fca5a5;
+}
+
+.admin-login-section {
+  margin-top: 1rem;
+  text-align: center;
+}
+
+.admin-login-button {
+  padding: 0.75rem 1.5rem;
+  background-color: #dc2626;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: 500;
+  transition: background-color 0.2s;
+}
+
+.admin-login-button:hover {
+  background-color: #b91c1c;
 }
 
 .google-login-button {
@@ -117,25 +169,4 @@
 
 .google-login-button:hover {
   background-color: #c23321;
-}
-
-.alert {
-  padding: 15px;
-  margin-bottom: 20px;
-  border: 1px solid transparent;
-  border-radius: 4px;
-  width: 100%;
-  max-width: 400px;
-}
-
-.alert-success {
-  color: #155724;
-  background-color: #d4edda;
-  border-color: #c3e6cb;
-}
-
-.alert-danger {
-  color: #721c24;
-  background-color: #f8d7da;
-  border-color: #f5c6cb;
 } 
