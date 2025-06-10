@@ -35,6 +35,8 @@ export const AuthProvider = ({ children }) => {
     setIsAuthenticated(false);
     localStorage.removeItem('user');
     localStorage.removeItem('token');
+    // Optionally, navigate to the home page or a specific logout page
+    window.location.href = '/'; // Redirect to MyFirst.jsx page
   };
 
   // Function to check if token is expired

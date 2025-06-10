@@ -1,7 +1,6 @@
 import React, { useState, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { GoogleLogin } from '@react-oauth/google';
-import '../styles/SignUpPage.css'; // Assuming you'll add some basic styling
 import { AuthContext } from '../context/AuthContext';
 import axios from 'axios';
 
@@ -9,11 +8,11 @@ function SignUpPage() {
   const navigate = useNavigate();
   const { login } = useContext(AuthContext);
   const [email, setEmail] = useState('');
-  const [name, setName] = useState(''); // Added name state
+  const [name, setName] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
-  const [otp, setOtp] = useState(''); // Added OTP state
-  const [step, setStep] = useState('signup'); // 'signup' or 'verify_otp'
+  const [otp, setOtp] = useState('');
+  const [step, setStep] = useState('signup');
   const [message, setMessage] = useState('');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
@@ -32,12 +31,12 @@ function SignUpPage() {
 
     try {
       const response = await axios.post('http://localhost:5000/api/auth/register', {
-        name, // Include name in the registration data
+        name,
         email,
         password,
       });
       setMessage(response.data.message);
-      setStep('verify_otp'); // Move to OTP verification step
+      setStep('verify_otp');
       setLoading(false);
     } catch (err) {
       console.error('Manual Sign Up Failed:', err.response?.data?.message || err.message);
@@ -94,71 +93,166 @@ function SignUpPage() {
     setError('Google Sign Up was unsuccessful. Please try again.');
   };
 
+  const handleAdminLogin = () => {
+    navigate('/admin/login');
+  };
+
+  const styles = {
+    container: {
+      maxWidth: '450px',
+      margin: '60px auto',
+      padding: '30px',
+      border: '1px solid #ddd',
+      borderRadius: '10px',
+      boxShadow: '0 4px 10px rgba(0,0,0,0.1)',
+      backgroundColor: '#fefefe',
+      textAlign: 'center',
+    },
+    formGroup: {
+      marginBottom: '15px',
+      textAlign: 'left',
+    },
+    label: {
+      display: 'block',
+      marginBottom: '5px',
+      fontWeight: 'bold',
+    },
+    input: {
+      width: '100%',
+      padding: '8px',
+      fontSize: '14px',
+      border: '1px solid #ccc',
+      borderRadius: '4px',
+    },
+    button: {
+      width: '100%',
+      padding: '10px',
+      backgroundColor: '#007BFF',
+      color: 'white',
+      border: 'none',
+      borderRadius: '4px',
+      fontSize: '16px',
+      cursor: 'pointer',
+    },
+    otpButton: {
+      width: '100%',
+      padding: '10px',
+      backgroundColor: '#28a745',
+      color: 'white',
+      border: 'none',
+      borderRadius: '4px',
+      fontSize: '16px',
+      cursor: 'pointer',
+    },
+    adminButton: {
+      width: '100%',
+      marginTop: '10px',
+      padding: '10px',
+      backgroundColor: '#343a40',
+      color: 'white',
+      border: 'none',
+      borderRadius: '4px',
+      fontSize: '14px',
+      cursor: 'pointer',
+    },
+    separator: {
+      margin: '20px 0',
+      fontWeight: 'bold',
+      color: '#888',
+    },
+    alertSuccess: {
+      backgroundColor: '#d4edda',
+      padding: '10px',
+      borderRadius: '4px',
+      color: '#155724',
+      marginBottom: '10px',
+    },
+    alertError: {
+      backgroundColor: '#f8d7da',
+      padding: '10px',
+      borderRadius: '4px',
+      color: '#721c24',
+      marginBottom: '10px',
+    }
+  };
+
   return (
-    <div className="signup-container">
+    <div className="signup-container" style={styles.container}>
       <h2>Sign Up</h2>
 
-      {message && <div className="alert alert-success">{message}</div>}
-      {error && <div className="alert alert-danger">{error}</div>}
+      {message && <div className="alert alert-success" style={styles.alertSuccess}>{message}</div>}
+      {error && <div className="alert alert-danger" style={styles.alertError}>{error}</div>}
 
       {step === 'signup' && (
         <form onSubmit={handleManualSignUp} className="signup-form">
-          <div className="form-group">
-            <label htmlFor="name">Name:</label>
+          <div className="form-group" style={styles.formGroup}>
+            <label htmlFor="name" style={styles.label}>Name:</label>
             <input
               type="text"
               id="name"
               value={name}
               onChange={(e) => setName(e.target.value)}
               required
+              style={styles.input}
             />
           </div>
-          <div className="form-group">
-            <label htmlFor="email">Email:</label>
+          <div className="form-group" style={styles.formGroup}>
+            <label htmlFor="email" style={styles.label}>Email:</label>
             <input
               type="email"
               id="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               required
+              style={styles.input}
             />
           </div>
-          <div className="form-group">
-            <label htmlFor="password">Password:</label>
+          <div className="form-group" style={styles.formGroup}>
+            <label htmlFor="password" style={styles.label}>Password:</label>
             <input
               type="password"
               id="password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               required
+              style={styles.input}
             />
           </div>
-          <div className="form-group">
-            <label htmlFor="confirmPassword">Confirm Password:</label>
+          <div className="form-group" style={styles.formGroup}>
+            <label htmlFor="confirmPassword" style={styles.label}>Confirm Password:</label>
             <input
               type="password"
               id="confirmPassword"
               value={confirmPassword}
               onChange={(e) => setConfirmPassword(e.target.value)}
               required
+              style={styles.input}
             />
           </div>
-          <button type="submit" className="manual-signup-button" disabled={loading}>
+          <button type="submit" className="manual-signup-button" disabled={loading} style={styles.button}>
             {loading ? 'Signing Up...' : 'Sign Up'}
           </button>
-          <div className="separator">OR</div>
+
+          <div className="separator" style={styles.separator}>OR</div>
+
           <GoogleLogin
             onSuccess={handleGoogleSuccess}
             onError={handleGoogleError}
           />
+
+          <div className="admin-login-section">
+            <button onClick={handleAdminLogin} className="admin-login-button" style={styles.adminButton}>
+              Admin Login
+            </button>
+          </div>
         </form>
       )}
 
-      {step === 'verify_otp' && ( 
+      {step === 'verify_otp' && (
         <form onSubmit={handleVerifyOtp} className="otp-form">
           <p>An OTP has been sent to your email ({email}). Please enter it below to verify your account.</p>
-          <div className="form-group">
-            <label htmlFor="otp">Enter OTP:</label>
+          <div className="form-group" style={styles.formGroup}>
+            <label htmlFor="otp" style={styles.label}>Enter OTP:</label>
             <input
               type="text"
               id="otp"
@@ -166,9 +260,10 @@ function SignUpPage() {
               onChange={(e) => setOtp(e.target.value)}
               required
               maxLength="6"
+              style={styles.input}
             />
           </div>
-          <button type="submit" className="verify-otp-button" disabled={loading}>
+          <button type="submit" className="verify-otp-button" disabled={loading} style={styles.otpButton}>
             {loading ? 'Verifying...' : 'Verify OTP'}
           </button>
         </form>
@@ -177,4 +272,4 @@ function SignUpPage() {
   );
 }
 
-export default SignUpPage; 
+export default SignUpPage;

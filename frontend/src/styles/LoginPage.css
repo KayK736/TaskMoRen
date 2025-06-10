@@ -7,6 +7,12 @@
   text-align: center;
   background-color: #f0f2f5; /* Light gray background */
   color: #333; /* Dark gray text */
+  max-width: 400px;
+  margin: 2rem auto;
+  padding: 2rem;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 .login-container h2 {
@@ -16,61 +22,49 @@
 }
 
 .login-form {
-  background-color: white;
-  padding: 40px;
-  border-radius: 10px;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-  width: 100%;
-  max-width: 400px;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
 }
 
 .form-group {
-  margin-bottom: 20px;
-  text-align: left;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
 }
 
 .form-group label {
-  display: block;
-  margin-bottom: 8px;
-  font-weight: bold;
-  color: #555;
+  font-weight: 500;
 }
 
-.form-group input[type="email"],
-.form-group input[type="password"] {
-  width: 100%;
-  padding: 12px;
+.form-group input {
+  padding: 0.5rem;
   border: 1px solid #ddd;
-  border-radius: 5px;
-  font-size: 1em;
+  border-radius: 4px;
 }
 
 .manual-login-button {
-  background-color: #007bff; /* Blue button */
+  padding: 0.75rem;
+  background-color: #4f46e5;
   color: white;
-  padding: 12px 20px;
-  font-size: 1em;
   border: none;
-  border-radius: 5px;
+  border-radius: 4px;
   cursor: pointer;
-  transition: background-color 0.3s ease;
-  width: 100%;
-  margin-top: 20px;
+  font-weight: 500;
 }
 
 .manual-login-button:hover {
-  background-color: #0056b3; /* Darker blue on hover */
+  background-color: #4338ca;
 }
 
 .separator {
-  margin: 30px 0;
-  color: #888;
+  text-align: center;
+  margin: 1rem 0;
   position: relative;
-  width: 100%;
-  max-width: 400px;
 }
 
-.separator::before, .separator::after {
+.separator::before,
+.separator::after {
   content: '';
   position: absolute;
   top: 50%;
@@ -85,6 +79,26 @@
 
 .separator::after {
   right: 0;
+}
+
+.admin-login-section {
+  margin-top: 1rem;
+  text-align: center;
+}
+
+.admin-login-button {
+  padding: 0.75rem 1.5rem;
+  background-color: #dc2626;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: 500;
+  transition: background-color 0.2s;
+}
+
+.admin-login-button:hover {
+  background-color: #b91c1c;
 }
 
 /* Styling for the GoogleLogin component provided by @react-oauth/google */

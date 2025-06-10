@@ -2,12 +2,18 @@ import React, { useContext } from 'react';
 import { Navigate } from 'react-router-dom';
 import { AuthContext } from '../context/AuthContext';
 
-const ProtectedRoute = ({ children }) => {
+const ProtectedRoute = ({ children, isAdminRoute = false, redirectPath = '/login' }) => {
   const { isAuthenticated } = useContext(AuthContext);
 
-  if (!isAuthenticated) {
-    // Redirect to login page if not authenticated
-    return <Navigate to="/login" replace />;
+  if (isAdminRoute) {
+    const adminToken = localStorage.getItem('adminToken');
+    if (!adminToken) {
+      return <Navigate to={redirectPath} replace />;
+    }
+  } else {
+    if (!isAuthenticated) {
+      return <Navigate to={redirectPath} replace />;
+    }
   }
 
   return children;
