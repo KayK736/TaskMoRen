@@ -5,11 +5,13 @@ import '../styles/Admin.css'; // Import the new Admin CSS file
 
 const AdminDashboard = () => {
     const [users, setUsers] = useState([]);
+    const [contactMessages, setContactMessages] = useState([]);
     const [editingUser, setEditingUser] = useState(null);
     const navigate = useNavigate();
 
     useEffect(() => {
         fetchUsers();
+        fetchContactMessages();
     }, []);
 
     const handleLogout = () => {
@@ -43,6 +45,21 @@ const AdminDashboard = () => {
             if (error.response?.status === 401) {
                 navigate('/admin/login');
             }
+        }
+    };
+
+    const fetchContactMessages = async () => {
+        console.log('Attempting to fetch contact messages...');
+        try {
+            const token = localStorage.getItem('adminToken');
+            const response = await axios.get('http://localhost:5000/api/contact/admin', {
+                headers: { Authorization: `Bearer ${token}` }
+            });
+            console.log('Contact messages fetched from backend:', response.data);
+            setContactMessages(response.data);
+        } catch (error) {
+            console.error('Error fetching contact messages:', error.response?.data || error.message);
+            // Handle error, e.g., redirect to login if unauthorized
         }
     };
 
@@ -216,6 +233,38 @@ const AdminDashboard = () => {
                         </table>
                     </div>
                 )}
+
+                <h2 className="admin-dashboard-title text-4xl mt-16 mb-8 border-b pb-4 border-gray-200">Contact Messages</h2>
+                <div className="admin-table-container border border-gray-200 rounded-lg shadow-xl overflow-hidden mb-12">
+                    <table className="admin-table w-full">
+                        <thead className="bg-gray-100 border-b border-gray-200">
+                            <tr>
+                                <th className="px-6 py-4 text-left text-sm font-semibold text-gray-700 uppercase tracking-wider">Name</th>
+                                <th className="px-6 py-4 text-left text-sm font-semibold text-gray-700 uppercase tracking-wider">Email</th>
+                                <th className="px-6 py-4 text-left text-sm font-semibold text-gray-700 uppercase tracking-wider">Subject</th>
+                                <th className="px-6 py-4 text-left text-sm font-semibold text-gray-700 uppercase tracking-wider">Message</th>
+                                <th className="px-6 py-4 text-left text-sm font-semibold text-gray-700 uppercase tracking-wider">Date</th>
+                            </tr>
+                        </thead>
+                        <tbody className="bg-white divide-y divide-gray-100">
+                            {contactMessages.length === 0 ? (
+                                <tr>
+                                    <td colSpan="5" className="px-6 py-4 text-center text-base text-gray-500">No contact messages found.</td>
+                                </tr>
+                            ) : (
+                                contactMessages.map((msg) => (
+                                    <tr key={msg._id} className="hover:bg-gray-50 transition-colors duration-150 ease-in-out">
+                                        <td className="px-6 py-4 whitespace-nowrap text-base text-gray-800">{msg.name}</td>
+                                        <td className="px-6 py-4 whitespace-nowrap text-base text-gray-800">{msg.email}</td>
+                                        <td className="px-6 py-4 whitespace-nowrap text-base text-gray-800">{msg.subject}</td>
+                                        <td className="px-6 py-4 text-base text-gray-800 break-words max-w-xs">{msg.message}</td>
+                                        <td className="px-6 py-4 whitespace-nowrap text-base text-gray-800">{new Date(msg.createdAt).toLocaleDateString()}</td>
+                                    </tr>
+                                ))
+                            )}
+                        </tbody>
+                    </table>
+                </div>
             </div>
         </div>
     );

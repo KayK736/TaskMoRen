@@ -1,0 +1,75 @@
+.app-footer {
+  background-color: #212529; /* A darker, more sophisticated black */
+  color: #e9ecef; /* Lighter text for contrast */
+  padding: 2rem 1.5rem; /* More vertical padding */
+  text-align: center;
+  border-top: 1px solid #343a40; /* Subtle border */
+  font-size: 0.95rem;
+  width: 100%;
+  box-sizing: border-box;
+  flex-shrink: 0; /* Prevent footer from shrinking */
+}
+
+.footer-content {
+  max-width: 1300px; /* Slightly wider content area */
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem; /* Space between paragraphs and nav */
+}
+
+.footer-content p {
+  margin: 0; /* Remove default paragraph margin */
+  line-height: 1.5;
+}
+
+.footer-nav {
+  display: flex;
+  flex-wrap: wrap; /* Allow links to wrap on smaller screens */
+  justify-content: center;
+  gap: 1.5rem; /* Space between nav links */
+  margin-top: 0.5rem; /* Space above nav if content p is present */
+}
+
+.footer-nav a {
+  color: #adb5bd; /* Slightly desaturated link color */
+  text-decoration: none;
+  transition: color 0.2s ease-in-out, transform 0.2s ease-in-out;
+  font-weight: 500;
+}
+
+.footer-nav a:hover {
+  color: #6a5acd; /* Vibrant highlight color on hover */
+  transform: translateY(-2px); /* Subtle lift effect */
+}
+
+/* Responsive adjustments */
+@media (min-width: 768px) {
+  .footer-content {
+    flex-direction: row;
+    justify-content: space-between;
+    gap: 0; /* Remove gap when in row layout */
+  }
+
+  .footer-content p {
+    flex-grow: 1; /* Allow paragraph to take available space */
+    text-align: left; /* Align text to left in wider screens */
+  }
+
+  .footer-nav {
+    margin-top: 0; /* Remove margin when in row layout */
+  }
+}
+
+@media (max-width: 576px) {
+  .footer-nav {
+    flex-direction: column; /* Stack links vertically */
+    gap: 0.5rem; /* Smaller gap when stacked */
+  }
+
+  .footer-nav a {
+    padding: 0.2rem 0; /* Add a little padding for clickable area */
+  }
+} 

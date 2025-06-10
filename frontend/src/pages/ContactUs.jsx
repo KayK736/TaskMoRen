@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import axios from 'axios';
 
 const ContactUs = () => {
   const [formData, setFormData] = useState({
@@ -21,19 +22,18 @@ const ContactUs = () => {
     setStatus({ type: 'info', message: 'Sending message...' });
 
     try {
-      // Here you would typically send the form data to your backend
-      // For now, we'll just simulate a successful submission
-      await new Promise(resolve => setTimeout(resolve, 1000));
+      const response = await axios.post('http://localhost:5000/api/contact', formData);
       
       setStatus({
         type: 'success',
-        message: 'Thank you for your message! We will get back to you soon.'
+        message: response.data.message || 'Thank you for your message! We will get back to you soon.'
       });
       setFormData({ name: '', email: '', subject: '', message: '' });
     } catch (error) {
+      console.error('Error sending contact message:', error);
       setStatus({
         type: 'danger',
-        message: 'Sorry, there was an error sending your message. Please try again.'
+        message: error.response?.data?.message || 'Sorry, there was an error sending your message. Please try again.'
       });
     }
   };
