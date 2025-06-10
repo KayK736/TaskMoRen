@@ -1,8 +1,9 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import axios from 'axios';
+import { AuthContext } from '../context/AuthContext';
 
 const Profile = () => {
-  const [user, setUser] = useState(null);
+  const { user, token, logout } = useContext(AuthContext);
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -10,31 +11,18 @@ const Profile = () => {
     newPassword: '',
     confirmPassword: ''
   });
-  const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
 
   useEffect(() => {
-    fetchUserProfile();
-  }, []);
-
-  const fetchUserProfile = async () => {
-    try {
-      const response = await axios.get('http://localhost:5000/api/users/profile');
-      const userData = response.data;
-      setUser(userData);
+    if (user) {
       setFormData(prev => ({
         ...prev,
-        name: userData.name,
-        email: userData.email
+        name: user.name || '',
+        email: user.email || ''
       }));
-      setLoading(false);
-    } catch (error) {
-      console.error('Error fetching user profile:', error);
-      setError('Error loading profile');
-      setLoading(false);
     }
-  };
+  }, [user]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -48,6 +36,11 @@ const Profile = () => {
     e.preventDefault();
     setError('');
     setSuccess('');
+
+    if (!user) {
+      setError('No user logged in.');
+      return;
+    }
 
     // Validate passwords if changing
     if (formData.newPassword) {
@@ -72,7 +65,11 @@ const Profile = () => {
         updateData.newPassword = formData.newPassword;
       }
 
-      await axios.put('http://localhost:5000/api/users/profile', updateData);
+      await axios.put('http://localhost:5000/api/users/profile', updateData, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
       setSuccess('Profile updated successfully');
       
       // Clear password fields
@@ -82,14 +79,19 @@ const Profile = () => {
         newPassword: '',
         confirmPassword: ''
       }));
+      // Potentially update user in context if backend returns updated user data
+      // For now, re-fetch profile to ensure consistency if any changes are applied at server side.
+      // Or better, update AuthContext with updated user data after successful update
+      // setUser({ ...user, name: formData.name, email: formData.email }); // if backend only updates these
+
     } catch (error) {
       console.error('Error updating profile:', error);
       setError(error.response?.data?.message || 'Error updating profile');
     }
   };
 
-  if (loading) {
-    return <div className="text-center">Loading...</div>;
+  if (!user) {
+    return <div className="text-center">Please log in to view your profile.</div>;
   }
 
   return (
@@ -199,28 +201,20 @@ const Profile = () => {
               <h3 className="h5 mb-0">Account Information</h3>
             </div>
             <div className="card-body">
-              <div className="mb-3">
-                <h4 className="h6">Role</h4>
-                <p className="mb-0">
-                  <span className="badge bg-primary">{user.role}</span>
-                </p>
-              </div>
-
-              <div className="mb-3">
-                <h4 className="h6">Account Status</h4>
-                <p className="mb-0">
-                  <span className={`badge bg-${user.isActive ? 'success' : 'danger'}`}>
-                    {user.isActive ? 'Active' : 'Disabled'}
-                  </span>
-                </p>
-              </div>
-
-              <div className="mb-3">
-                <h4 className="h6">Member Since</h4>
-                <p className="mb-0">
-                  {new Date(user.createdAt).toLocaleDateString()}
-                </p>
-              </div>
+              {user.profilePicture && (
+                <div className="text-center mb-3">
+                  <img
+                    src={user.profilePicture}
+                    alt="Profile"
+                    className="img-thumbnail rounded-circle"
+                    style={{ width: '100px', height: '100px', objectFit: 'cover' }}
+                  />
+                </div>
+              )}
+              <p><strong>User ID:</strong> {user.id}</p>
+              <p><strong>Role:</strong> {user.role}</p>
+              <p><strong>Account Status:</strong> {user.isActive ? 'Active' : 'Inactive'}</p>
+              <button onClick={logout} className="btn btn-danger mt-3">Logout</button>
             </div>
           </div>
         </div>
