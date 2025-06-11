@@ -2,11 +2,15 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import '../styles/Admin.css'; // Import the new Admin CSS file
+import ConfirmationModal from './ConfirmationModal';
 
 const AdminDashboard = () => {
     const [users, setUsers] = useState([]);
     const [contactMessages, setContactMessages] = useState([]);
     const [editingUser, setEditingUser] = useState(null);
+    const [showConfirmModal, setShowConfirmModal] = useState(false);
+    const [confirmMessage, setConfirmMessage] = useState('');
+    const [confirmAction, setConfirmAction] = useState(null);
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -83,8 +87,9 @@ const AdminDashboard = () => {
         }
     };
 
-    const handleDelete = async (userId) => {
-        if (window.confirm('Are you sure you want to disable this user?')) {
+    const handleDelete = (userId) => {
+        setConfirmMessage('Are you sure you want to disable this user?');
+        setConfirmAction(() => async () => {
             try {
                 const token = localStorage.getItem('adminToken');
                 await axios.put(`http://localhost:5000/api/admin/users/${userId}`, { isActive: false }, {
@@ -93,12 +98,16 @@ const AdminDashboard = () => {
                 fetchUsers();
             } catch (error) {
                 console.error('Error disabling user:', error);
+            } finally {
+                setShowConfirmModal(false);
             }
-        }
+        });
+        setShowConfirmModal(true);
     };
 
-    const handleEnable = async (userId) => {
-        if (window.confirm('Are you sure you want to enable this user?')) {
+    const handleEnable = (userId) => {
+        setConfirmMessage('Are you sure you want to enable this user?');
+        setConfirmAction(() => async () => {
             try {
                 const token = localStorage.getItem('adminToken');
                 await axios.put(`http://localhost:5000/api/admin/users/${userId}`, { isActive: true }, {
@@ -107,8 +116,16 @@ const AdminDashboard = () => {
                 fetchUsers();
             } catch (error) {
                 console.error('Error enabling user:', error);
+            } finally {
+                setShowConfirmModal(false);
             }
-        }
+        });
+        setShowConfirmModal(true);
+    };
+
+    const handleCancelConfirm = () => {
+        setShowConfirmModal(false);
+        setConfirmAction(null);
     };
 
     return (
@@ -266,6 +283,13 @@ const AdminDashboard = () => {
                     </table>
                 </div>
             </div>
+
+            <ConfirmationModal
+                showModal={showConfirmModal}
+                message={confirmMessage}
+                onConfirm={confirmAction}
+                onCancel={handleCancelConfirm}
+            />
         </div>
     );
 };
