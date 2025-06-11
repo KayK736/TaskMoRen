@@ -38,62 +38,169 @@ const ContactUs = () => {
     }
   };
 
-  return (
-    <div className="container py-4">
-      <h1 className="mb-4">Contact Us</h1>
+  // CSS Styles
+  const styles = {
+    container: {
+      maxWidth: '1200px',
+      margin: '0 auto',
+      padding: '2rem',
+      fontFamily: "'Segoe UI', Tahoma, Geneva, Verdana, sans-serif"
+    },
+    header: {
+      color: '#2d3748',
+      marginBottom: '2rem',
+      fontWeight: '600',
+      fontSize: '2rem',
+      textAlign: 'center'
+    },
+    card: {
+      borderRadius: '12px',
+      boxShadow: '0 4px 20px rgba(0, 0, 0, 0.08)',
+      border: 'none',
+      overflow: 'hidden',
+      transition: 'transform 0.3s ease, box-shadow 0.3s ease',
+      height: '100%',
+      ':hover': {
+        transform: 'translateY(-5px)',
+        boxShadow: '0 8px 25px rgba(0, 0, 0, 0.12)'
+      }
+    },
+    cardBody: {
+      padding: '2rem'
+    },
+    sectionTitle: {
+      color: '#2d3748',
+      marginBottom: '1.5rem',
+      fontWeight: '600',
+      fontSize: '1.25rem'
+    },
+    contactInfo: {
+      marginBottom: '2rem',
+      lineHeight: '1.8'
+    },
+    icon: {
+      color: '#667eea',
+      marginRight: '0.5rem'
+    },
+    formLabel: {
+      fontWeight: '500',
+      color: '#4a5568',
+      marginBottom: '0.5rem',
+      display: 'block'
+    },
+    formControl: {
+      width: '100%',
+      padding: '0.75rem 1rem',
+      border: '1px solid #e2e8f0',
+      borderRadius: '8px',
+      fontSize: '1rem',
+      transition: 'border-color 0.3s ease, box-shadow 0.3s ease',
+      ':focus': {
+        outline: 'none',
+        borderColor: '#667eea',
+        boxShadow: '0 0 0 3px rgba(102, 126, 234, 0.2)'
+      }
+    },
+    textArea: {
+      minHeight: '150px',
+      resize: 'vertical'
+    },
+    submitButton: {
+      backgroundColor: '#667eea',
+      color: 'white',
+      border: 'none',
+      padding: '0.75rem 1.5rem',
+      borderRadius: '8px',
+      fontSize: '1rem',
+      fontWeight: '600',
+      cursor: 'pointer',
+      transition: 'all 0.3s ease',
+      ':hover': {
+        backgroundColor: '#5a67d8',
+        transform: 'translateY(-2px)'
+      }
+    },
+    alert: {
+      padding: '1rem',
+      borderRadius: '8px',
+      marginBottom: '1.5rem',
+      border: '1px solid transparent'
+    },
+    alertSuccess: {
+      backgroundColor: '#f0fff4',
+      color: '#2f855a',
+      borderColor: '#c6f6d5'
+    },
+    alertDanger: {
+      backgroundColor: '#fff5f5',
+      color: '#c53030',
+      borderColor: '#fed7d7'
+    },
+    alertInfo: {
+      backgroundColor: '#ebf8ff',
+      color: '#2b6cb0',
+      borderColor: '#bee3f8'
+    },
+    businessHours: {
+      lineHeight: '1.8'
+    }
+  };
 
-      <div className="row">
-        <div className="col-md-6 mb-4">
-          <div className="card h-100">
-            <div className="card-body">
-              <h2 className="h4 mb-3">Get in Touch</h2>
-              <p className="mb-4">
+  // Dynamic alert style
+  const getAlertStyle = () => {
+    switch(status.type) {
+      case 'success': return { ...styles.alert, ...styles.alertSuccess };
+      case 'danger': return { ...styles.alert, ...styles.alertDanger };
+      case 'info': return { ...styles.alert, ...styles.alertInfo };
+      default: return styles.alert;
+    }
+  };
+
+  return (
+    <div style={styles.container}>
+      <h1 style={styles.header}>Contact Us</h1>
+
+      <div style={{ display: 'flex', flexWrap: 'wrap', gap: '2rem' }}>
+        <div style={{ flex: '1', minWidth: '300px' }}>
+          <div style={styles.card}>
+            <div style={styles.cardBody}>
+              <h2 style={styles.sectionTitle}>Get in Touch</h2>
+              <p style={{ marginBottom: '2rem', lineHeight: '1.6', color: '#4a5568' }}>
                 Have questions or feedback? We'd love to hear from you. Fill out the form
                 and we'll get back to you as soon as possible.
               </p>
 
-              <div className="mb-4">
-                <h3 className="h5">Contact Information</h3>
-                <p className="mb-2">
-                  <i className="bi bi-envelope me-2"></i>
+              <div style={styles.contactInfo}>
+                <h3 style={styles.sectionTitle}>Contact Information</h3>
+                <p style={{ marginBottom: '1rem' }}>
+                  <span style={styles.icon}>✉️</span>
                   support@taskmoren.com
                 </p>
-                <p className="mb-2">
-                  <i className="bi bi-telephone me-2"></i>
-                  +1 (555) 123-4567
-                </p>
-                <p className="mb-0">
-                  <i className="bi bi-geo-alt me-2"></i>
-                  123 Task Street, Productivity City, PC 12345
-                </p>
+               
+               
               </div>
 
-              <div>
-                <h3 className="h5">Business Hours</h3>
-                <p className="mb-2">Monday - Friday: 9:00 AM - 6:00 PM</p>
-                <p className="mb-0">Saturday - Sunday: Closed</p>
-              </div>
             </div>
           </div>
         </div>
 
-        <div className="col-md-6">
-          <div className="card">
-            <div className="card-body">
-              <h2 className="h4 mb-3">Send us a Message</h2>
+        <div style={{ flex: '1', minWidth: '300px' }}>
+          <div style={styles.card}>
+            <div style={styles.cardBody}>
+              <h2 style={styles.sectionTitle}>Send us a Message</h2>
               
               {status.message && (
-                <div className={`alert alert-${status.type}`} role="alert">
+                <div style={getAlertStyle()} role="alert">
                   {status.message}
                 </div>
               )}
 
               <form onSubmit={handleSubmit}>
-                <div className="mb-3">
-                  <label htmlFor="name" className="form-label">Name</label>
+                <div style={{ marginBottom: '1.5rem' }}>
+                  <label htmlFor="name" style={styles.formLabel}>Name</label>
                   <input
                     type="text"
-                    className="form-control"
+                    style={styles.formControl}
                     id="name"
                     name="name"
                     value={formData.name}
@@ -102,11 +209,11 @@ const ContactUs = () => {
                   />
                 </div>
 
-                <div className="mb-3">
-                  <label htmlFor="email" className="form-label">Email</label>
+                <div style={{ marginBottom: '1.5rem' }}>
+                  <label htmlFor="email" style={styles.formLabel}>Email</label>
                   <input
                     type="email"
-                    className="form-control"
+                    style={styles.formControl}
                     id="email"
                     name="email"
                     value={formData.email}
@@ -115,11 +222,11 @@ const ContactUs = () => {
                   />
                 </div>
 
-                <div className="mb-3">
-                  <label htmlFor="subject" className="form-label">Subject</label>
+                <div style={{ marginBottom: '1.5rem' }}>
+                  <label htmlFor="subject" style={styles.formLabel}>Subject</label>
                   <input
                     type="text"
-                    className="form-control"
+                    style={styles.formControl}
                     id="subject"
                     name="subject"
                     value={formData.subject}
@@ -128,10 +235,10 @@ const ContactUs = () => {
                   />
                 </div>
 
-                <div className="mb-3">
-                  <label htmlFor="message" className="form-label">Message</label>
+                <div style={{ marginBottom: '1.5rem' }}>
+                  <label htmlFor="message" style={styles.formLabel}>Message</label>
                   <textarea
-                    className="form-control"
+                    style={{ ...styles.formControl, ...styles.textArea }}
                     id="message"
                     name="message"
                     rows="5"
@@ -141,7 +248,7 @@ const ContactUs = () => {
                   ></textarea>
                 </div>
 
-                <button type="submit" className="btn btn-primary">
+                <button type="submit" style={styles.submitButton}>
                   Send Message
                 </button>
               </form>
@@ -153,4 +260,4 @@ const ContactUs = () => {
   );
 };
 
-export default ContactUs; 
+export default ContactUs;
